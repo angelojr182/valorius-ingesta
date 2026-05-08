@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Valorius - Ingesta Masiva</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.19.0/dist/tabler-icons.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#f5f5f3;color:#1a1a1a;min-height:100vh;padding:2rem 1rem}
+.container{max-width:960px;margin:0 auto}
+.header{margin-bottom:1.5rem}
+.header h1{font-size:20px;font-weight:500;color:#1a1a1a;display:flex;align-items:center;gap:8px}
+.header p{font-size:13px;color:#666;margin-top:4px}
+.template-note{font-size:12px;color:#666;background:#efefed;border-radius:8px;padding:10px 14px;margin-bottom:1rem;border:0.5px solid #ddd}
+.template-note strong{color:#444;font-weight:500}
+.drop-zone{border:1.5px dashed #bbb;border-radius:12px;padding:2.5rem 1rem;text-align:center;cursor:pointer;background:#fff;margin-bottom:1rem;transition:background 0.15s}
+.drop-zone:hover,.drop-zone.drag-over{background:#f0f0ee}
+.drop-zone i{font-size:32px;color:#999;display:block;margin-bottom:8px}
+.drop-zone p{color:#666;margin:0 0 6px;font-size:13px}
+.drop-zone span{font-size:12px;color:#aaa}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:1rem}
+.stat{background:#efefed;border-radius:8px;padding:12px}
+.stat-label{font-size:12px;color:#666;margin-bottom:4px}
+.stat-value{font-size:22px;font-weight:500;color:#1a1a1a}
+.c-ok{color:#0F6E56}
+.c-err{color:#993C1D}
+.filter-row{display:flex;gap:8px;margin-bottom:1rem;align-items:center}
+.filter-row select,.filter-row input{font-size:12px;padding:6px 10px;border-radius:8px;border:0.5px solid #ccc;background:#fff;color:#1a1a1a;outline:none;height:32px}
+.filter-row input{flex:1}
+.table-wrap{overflow-x:auto;border:0.5px solid #e0ddd6;border-radius:12px;margin-bottom:1rem;background:#fff}
+table{width:100%;border-collapse:collapse;font-size:12px}
+th{background:#f5f5f3;padding:8px 10px;text-align:left;font-weight:500;color:#666;border-bottom:0.5px solid #e0ddd6;white-space:nowrap}
+td{padding:7px 10px;border-bottom:0.5px solid #f0ede6;color:#1a1a1a;vertical-align:top}
+tr:last-child td{border-bottom:none}
+tr.row-ok{background:#E1F5EE18}
+tr.row-err{background:#FAECE718}
+.badge{display:inline-flex;align-items:center;gap:4px;padding:2px 8px;border-radius:99px;font-size:11px;font-weight:500}
+.badge-ok{background:#E1F5EE;color:#0F6E56}
+.badge-err{background:#FAECE7;color:#993C1D}
+.err-msg{font-size:11px;color:#993C1D;margin-top:3px}
+.btn{display:inline-flex;align-items:center;gap:6px;padding:8px 16px;border:0.5px solid #ccc;border-radius:8px;background:transparent;color:#1a1a1a;font-size:13px;cursor:pointer;transition:background 0.15s}
+.btn:hover{background:#efefed}
+.btn:disabled{opacity:0.4;cursor:not-allowed}
+.btn-primary{background:#1a1a1a;color:#fff;border-color:#1a1a1a}
+.btn-primary:hover{background:#333;border-color:#333}
+.actions{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:1rem}
+.progress-bar{height:4px;background:#e0ddd6;border-radius:99px;overflow:hidden;margin:10px 0}
+.progress-fill{height:100%;background:#1D9E75;border-radius:99px;transition:width 0.2s}
+.progress-label{font-size:12px;color:#666;margin-bottom:4px}
+.result-ok{background:#E1F5EE;color:#085041;border:0.5px solid #5DCAA5;border-radius:8px;padding:1rem;margin-top:8px;font-size:13px}
+.result-err{background:#FAECE7;color:#712B13;border:0.5px solid #F0997B;border-radius:8px;padding:1rem;margin-top:8px;font-size:13px}
+.fc{font-size:12px;color:#aaa}
+@media(max-width:600px){.stats{grid-template-columns:repeat(2,1fr)}}
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="header">
+    <h1><i class="ti ti-database-import"></i> Valorius &mdash; Ingesta Masiva</h1>
+    <p>Subi tu Excel, revisa errores fila por fila e inserta solo lo valido a Supabase.</p>
+  </div>
+  <div class="template-note">
+    <strong>Columnas requeridas:</strong> zona &middot; tipo_inmueble &middot; ciudad &middot; colonia &middot; precio &middot; moneda (USD/LPS) &middot; fecha_registro &middot; area_construccion &middot; area_terreno &middot; habitaciones &middot; banos &middot; estacionamientos &middot; fuente &middot; url &middot; subzona &middot; descripcion &middot; nivel_seguridad &middot; tipo_cambio
+  </div>
+  <div class="drop-zone" id="dropZone">
+    <i class="ti ti-file-spreadsheet"></i>
+    <p>Arrastra tu archivo Excel aqui</p>
+    <span>o haz click para seleccionar (.xlsx, .xls, .csv)</span>
+    <input type="file" id="fileInput" accept=".xlsx,.xls,.csv" style="display:none">
+  </div>
+  <div id="previewSection" style="display:none">
+    <div class="stats">
+      <div class="stat"><div class="stat-label">Total filas</div><div class="stat-value" id="statTotal">0</div></div>
+      <div class="stat"><div class="stat-label">Validas</div><div class="stat-value c-ok" id="statOk">0</div></div>
+      <div class="stat"><div class="stat-label">Con errores</div><div class="stat-value c-err" id="statErr">0</div></div>
+      <div class="stat"><div class="stat-label">Insertadas</div><div class="stat-value" id="statInserted">0</div></div>
+    </div>
+    <div class="filter-row">
+      <select id="filterStatus">
+        <option value="all">Todas las filas</option>
+        <option value="ok">Solo validas</option>
+        <option value="err">Solo con error</option>
+      </select>
+      <input type="text" id="filterText" placeholder="Buscar zona, colonia...">
+      <span class="fc" id="filterCount"></span>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th>#</th><th>Estado</th><th>Zona</th><th>Tipo</th><th>Ciudad</th><th>Colonia</th><th>Precio</th><th>Moneda</th><th>Area m2</th><th>Hab.</th><th>Fuente</th><th>Fecha</th></tr>
+        </thead>
+        <tbody id="tableBody"></tbody>
+      </table>
+    </div>
+    <div id="progressWrap" style="display:none">
+      <div class="progress-label" id="progressLabel">Insertando...</div>
+      <div class="progress-bar"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
+    </div>
+    <div class="actions">
+      <button class="btn btn-primary" id="btnInsert" onclick="insertarValidas()">
+        <i class="ti ti-database-import"></i> Insertar filas validas
+      </button>
+      <button class="btn" onclick="resetUI()">
+        <i class="ti ti-refresh"></i> Cargar otro archivo
+      </button>
+    </div>
+    <div id="resultBox"></div>
+  </div>
+</div>
+<script>
+var SURL="https://oxhzxistgyfvkhzncxpz.supabase.co";
+var SKEY="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im94aHp4aXN0Z3lmdmtoem5jeHB6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc2NTE0NzIsImV4cCI6MjA5MzIyNzQ3Mn0.-Q8XybmgAQdiBA5tAFi9LLoFnLuF0nJlsCh8WlTUjis";
+var ZONAS={
+  "anillo perisférico":"c577b26f-3041-483b-be3c-6d849d35eca7",
+  "anillo perisferico":"c577b26f-3041-483b-be3c-6d849d35eca7",
+  "boulevard morazán":"ee434960-b814-4e28-83de-d9580534a1c0",
+  "boulevard morazan":"ee434960-b814-4e28-83de-d9580534a1c0",
+  "bulevar morazan":"7fd29b38-d38f-4e8d-8007-976ef5d1bc71",
+  "bulevar morazán":"7fd29b38-d38f-4e8d-8007-976ef5d1bc71",
+  "colonia palmira":"3847381f-a39a-4371-bbc5-c8ba054a2b50",
+  "el hatillo":"432dd604-58fc-414c-9d67-fd18ed4ba835",
+  "el trapiche":"6ffdc66c-a15b-498c-a60d-cadc4346f89a",
+  "las hadas":"95ebf11d-30da-4ebd-8117-73366864ddee",
+  "las uvas":"3df25638-0d68-4726-b411-928fb7335ad5",
+  "lomas del guijarro":"18e45e8c-1143-487e-aad3-5efd1af5b763",
+  "miraflores":"b61262d0-7710-4da4-b01b-65efedf376a2",
+  "resedencial centro america":"d98733cb-130a-4a1d-849a-57fa8562713f",
+  "residencial centro america":"d98733cb-130a-4a1d-849a-57fa8562713f",
+  "residencial el sauce":"8e11848a-54a9-484e-98aa-ebf35ce7b77e",
+  "residencial portal del bosque 1":"b77619bc-b0d5-4ed2-a3e9-c65eaa9f5b66",
+  "residencial villa elena":"ab73c240-311e-4b1f-a081-15cccb0c6f7b",
+  "residencial zarahemla ii":"4924abf6-7379-432d-99df-99702eb56e9e",
+  "roble oeste":"8d6639c9-6de7-4766-94c8-954160d6f796",
+  "san ignacio":"3924ec4a-bd5e-4871-8dc3-3d1e3d78d887"
+};
+var TIPOS={
+  "apartamento":"cb828362-900b-4cf8-9e7c-d1f5b15d4aa5",
+  "casa":"8c4efee8-42c2-43ee-b4de-82a64798365e",
+  "terreno":"d6006231-4bc5-4375-a6c2-1381089aea84"
+};
+var parsedRows=[],filteredRows=[];
+function norm(s){return String(s||"").toLowerCase().trim().normalize("NFD").replace(/[\u0300-\u036f]/g,"");}
+function parseDate(v){
+  if(!v)return null;
+  if(typeof v==="number"){var d=new Date(Math.round((v-25569)*86400*1000));return d.toISOString().split("T")[0];}
+  var s=String(v).trim();
+  if(/^\d{4}-\d{2}-\d{2}$/.test(s))return s;
+  var p=s.split(/[\/\-]/);
+  if(p.length===3){if(p[2].length===4)return p[2]+"-"+p[1].padStart(2,"0")+"-"+p[0].padStart(2,"0");return p[0]+"-"+p[1].padStart(2,"0")+"-"+p[2].padStart(2,"0");}
+  return null;
+}
+function validar(row){
+  var e=[],zid=ZONAS[norm(row.zona)],tid=TIPOS[norm(row.tipo_inmueble)],
+      mon=String(row.moneda||"").toUpperCase().trim(),fec=parseDate(row.fecha_registro);
+  if(!row.zona)e.push("zona vacia");else if(!zid)e.push('zona no existe: "'+row.zona+'"');
+  if(!row.tipo_inmueble)e.push("tipo_inmueble vacio");else if(!tid)e.push('tipo no existe: "'+row.tipo_inmueble+'"');
+  if(!row.ciudad)e.push("ciudad vacia");
+  if(!row.colonia)e.push("colonia vacia");
+  if(!row.precio||isNaN(Number(row.precio))||Number(row.precio)<=0)e.push("precio invalido");
+  if(!["USD","LPS"].includes(mon))e.push("moneda debe ser USD o LPS");
+  if(!row.fecha_registro)e.push("fecha_registro vacia");else if(!fec)e.push("fecha invalida");
+  if(row.habitaciones!==""&&row.habitaciones!==undefined&&(isNaN(Number(row.habitaciones))||Number(row.habitaciones)<0||Number(row.habitaciones)>20))e.push("habitaciones 0-20");
+  if(row.banos!==""&&row.banos!==undefined&&(isNaN(Number(row.banos))||Number(row.banos)<0||Number(row.banos)>20))e.push("banos 0-20");
+  if(row.estacionamientos!==""&&row.estacionamientos!==undefined&&(isNaN(Number(row.estacionamientos))||Number(row.estacionamientos)<0||Number(row.estacionamientos)>10))e.push("estacionamientos 0-10");
+  if(row.area_construccion&&(isNaN(Number(row.area_construccion))||Number(row.area_construccion)<=0))e.push("area_construccion invalida");
+  if(row.area_terreno&&(isNaN(Number(row.area_terreno))||Number(row.area_terreno)<=0))e.push("area_terreno invalida");
+  return{e:e,zid:zid,tid:tid,mon:mon,fec:fec};
+}
+function esc(s){return String(s||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");}
+function renderTable(rows){
+  var tb=document.getElementById("tableBody");tb.innerHTML="";
+  rows.forEach(function(r){
+    var tr=document.createElement("tr");tr.className=r.valid?"row-ok":"row-err";
+    tr.innerHTML="<td style='color:#aaa'>"+r.idx+"</td>"+
+      "<td><span class='badge "+(r.valid?"badge-ok":"badge-err")+"'>"+(r.valid?"valida":"error")+"</span>"+
+      (r.valid?"":"<div class='err-msg'>"+esc(r.errores.join(" - "))+"</div>")+"</td>"+
+      "<td>"+esc(r.row.zona)+"</td><td>"+esc(r.row.tipo_inmueble)+"</td>"+
+      "<td>"+esc(r.row.ciudad)+"</td><td>"+esc(r.row.colonia)+"</td>"+
+      "<td>"+(r.row.precio?Number(r.row.precio).toLocaleString():"")+"</td>"+
+      "<td>"+esc(r.row.moneda)+"</td>"+
+      "<td>"+(r.row.area_construccion||r.row.area_terreno||"")+"</td>"+
+      "<td>"+(r.row.habitaciones||"")+"</td>"+
+      "<td>"+esc(r.row.fuente||"")+"</td>"+
+      "<td>"+esc(String(r.row.fecha_registro||""))+"</td>";
+    tb.appendChild(tr);
+  });
+}
+function filtrar(){
+  var st=document.getElementById("filterStatus").value,tx=norm(document.getElementById("filterText").value);
+  filteredRows=parsedRows.filter(function(r){
+    if(st==="ok"&&!r.valid)return false;
+    if(st==="err"&&r.valid)return false;
+    if(tx&&!norm(JSON.stringify(r.row)).includes(tx))return false;
+    return true;
+  });
+  renderTable(filteredRows);
+  document.getElementById("filterCount").textContent="Mostrando "+filteredRows.length+" de "+parsedRows.length;
+}
+document.getElementById("filterStatus").addEventListener("change",filtrar);
+document.getElementById("filterText").addEventListener("input",filtrar);
+function procesarArchivo(file){
+  var reader=new FileReader();
+  reader.onload=function(e){
+    try{
+      var wb=XLSX.read(e.target.result,{type:"array"}),ws=wb.Sheets[wb.SheetNames[0]],
+          data=XLSX.utils.sheet_to_json(ws,{defval:""});
+      if(!data.length){alert("Archivo vacio.");return;}
+      parsedRows=data.map(function(row,i){
+        var v=validar(row);
+        return{idx:i+2,row:row,errores:v.e,valid:v.e.length===0,zid:v.zid,tid:v.tid,mon:v.mon,fec:v.fec};
+      });
+      var ok=parsedRows.filter(function(r){return r.valid;}).length;
+      document.getElementById("statTotal").textContent=parsedRows.length;
+      document.getElementById("statOk").textContent=ok;
+      document.getElementById("statErr").textContent=parsedRows.length-ok;
+      document.getElementById("statInserted").textContent="0";
+      document.getElementById("previewSection").style.display="block";
+      document.getElementById("dropZone").style.display="none";
+      document.getElementById("resultBox").innerHTML="";
+      filteredRows=parsedRows;renderTable(filteredRows);
+      document.getElementById("filterCount").textContent="Mostrando "+filteredRows.length+" de "+parsedRows.length;
+    }catch(err){alert("Error: "+err.message);}
+  };
+  reader.readAsArrayBuffer(file);
+}
+var dz=document.getElementById("dropZone");
+dz.addEventListener("click",function(){document.getElementById("fileInput").click();});
+dz.addEventListener("dragover",function(e){e.preventDefault();dz.classList.add("drag-over");});
+dz.addEventListener("dragleave",function(){dz.classList.remove("drag-over");});
+dz.addEventListener("drop",function(e){e.preventDefault();dz.classList.remove("drag-over");if(e.dataTransfer.files[0])procesarArchivo(e.dataTransfer.files[0]);});
+document.getElementById("fileInput").addEventListener("change",function(e){if(e.target.files[0])procesarArchivo(e.target.files[0]);});
+async function sbPost(ep,body){
+  var r=await fetch(SURL+"/rest/v1/"+ep,{method:"POST",headers:{"apikey":SKEY,"Authorization":"Bearer "+SKEY,"Content-Type":"application/json","Prefer":"return=representation"},body:JSON.stringify(body)});
+  var data=await r.json();if(!r.ok)throw new Error(data.message||data.error||r.status);return data;
+}
+async function insertarValidas(){
+  var validas=parsedRows.filter(function(r){return r.valid;});
+  if(!validas.length){alert("No hay filas validas.");return;}
+  var btn=document.getElementById("btnInsert");btn.disabled=true;
+  document.getElementById("progressWrap").style.display="block";
+  var ins=0,errs=[];
+  for(var i=0;i<validas.length;i++){
+    var r=validas[i];
+    document.getElementById("progressFill").style.width=Math.round(i/validas.length*100)+"%";
+    document.getElementById("progressLabel").textContent="Insertando "+(i+1)+" de "+validas.length+"...";
+    try{
+      var pb={zone_id:r.zid,property_type_id:r.tid,ciudad:String(r.row.ciudad).trim(),colonia:String(r.row.colonia).trim()};
+      if(r.row.habitaciones!==""&&r.row.habitaciones!==undefined)pb.habitaciones=Number(r.row.habitaciones);
+      if(r.row.banos!==""&&r.row.banos!==undefined)pb.banos=Number(r.row.banos);
+      if(r.row.estacionamientos!==""&&r.row.estacionamientos!==undefined)pb.estacionamientos=Number(r.row.estacionamientos);
+      if(r.row.nivel_seguridad)pb.nivel_seguridad=String(r.row.nivel_seguridad).trim();
+      if(r.row.subzona)pb.subzona=String(r.row.subzona).trim();
+      if(r.row.descripcion)pb.descripcion=String(r.row.descripcion).trim();
+      var pr=await sbPost("core.property",pb);
+      var pid=pr[0].property_id;
+      var lb={property_id:pid,fecha_registro:r.fec,precio_original:Number(r.row.precio),moneda:r.mon};
+      if(r.row.fuente)lb.fuente=String(r.row.fuente).trim();
+      if(r.row.url)lb.url=String(r.row.url).trim();
+      if(r.row.area_construccion!==""&&r.row.area_construccion!==undefined)lb.area_construccion=Number(r.row.area_construccion);
+      if(r.row.area_terreno!==""&&r.row.area_terreno!==undefined)lb.area_terreno=Number(r.row.area_terreno);
+      if(r.row.tipo_cambio!==""&&r.row.tipo_cambio!==undefined)lb.tipo_cambio=Number(r.row.tipo_cambio);
+      await sbPost("core.listing",lb);
+      ins++;document.getElementById("statInserted").textContent=ins;
+    }catch(ex){errs.push("Fila "+r.idx+": "+ex.message);}
+  }
+  document.getElementById("progressFill").style.width="100%";
+  document.getElementById("progressLabel").textContent="Completado.";
+  btn.disabled=false;
+  var rb=document.getElementById("resultBox");
+  rb.innerHTML="<div class='result-ok'><strong>"+ins+" propiedades insertadas correctamente.</strong></div>"+
+    (errs.length?"<div class='result-err'><strong>"+errs.length+" errores:</strong><br>"+errs.join("<br>")+"</div>":"");
+}
+function resetUI(){
+  document.getElementById("previewSection").style.display="none";
+  document.getElementById("dropZone").style.display="block";
+  document.getElementById("fileInput").value="";
+  document.getElementById("progressWrap").style.display="none";
+  parsedRows=[];
+}
+</script>
+</body>
+</html>
