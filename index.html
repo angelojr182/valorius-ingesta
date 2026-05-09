@@ -231,8 +231,8 @@ dz.addEventListener("dragover",function(e){e.preventDefault();dz.classList.add("
 dz.addEventListener("dragleave",function(){dz.classList.remove("drag-over");});
 dz.addEventListener("drop",function(e){e.preventDefault();dz.classList.remove("drag-over");if(e.dataTransfer.files[0])procesarArchivo(e.dataTransfer.files[0]);});
 document.getElementById("fileInput").addEventListener("change",function(e){if(e.target.files[0])procesarArchivo(e.target.files[0]);});
-async function sbPost(ep,body){
-  var r=await fetch(SURL+"/rest/v1/"+ep,{method:"POST",headers:{"apikey":SKEY,"Authorization":"Bearer "+SKEY,"Content-Type":"application/json","Prefer":"return=representation"},body:JSON.stringify(body)});
+async function sbPost(schema,table,body){
+  var r=await fetch(SURL+"/rest/v1/"+table,{method:"POST",headers:{"apikey":SKEY,"Authorization":"Bearer "+SKEY,"Content-Type":"application/json","Content-Profile":schema,"Accept-Profile":schema,"Prefer":"return=representation"},body:JSON.stringify(body)});
   var data=await r.json();if(!r.ok)throw new Error(data.message||data.error||r.status);return data;
 }
 async function insertarValidas(){
@@ -253,7 +253,7 @@ async function insertarValidas(){
       if(r.row.nivel_seguridad)pb.nivel_seguridad=String(r.row.nivel_seguridad).trim();
       if(r.row.subzona)pb.subzona=String(r.row.subzona).trim();
       if(r.row.descripcion)pb.descripcion=String(r.row.descripcion).trim();
-      var pr=await sbPost("core.property",pb);
+      var pr=await sbPost("core","property",pb);
       var pid=pr[0].property_id;
       var lb={property_id:pid,fecha_registro:r.fec,precio_original:Number(r.row.precio),moneda:r.mon};
       if(r.row.fuente)lb.fuente=String(r.row.fuente).trim();
@@ -261,7 +261,7 @@ async function insertarValidas(){
       if(r.row.area_construccion!==""&&r.row.area_construccion!==undefined)lb.area_construccion=Number(r.row.area_construccion);
       if(r.row.area_terreno!==""&&r.row.area_terreno!==undefined)lb.area_terreno=Number(r.row.area_terreno);
       if(r.row.tipo_cambio!==""&&r.row.tipo_cambio!==undefined)lb.tipo_cambio=Number(r.row.tipo_cambio);
-      await sbPost("core.listing",lb);
+      await sbPost("core","listing",lb);
       ins++;document.getElementById("statInserted").textContent=ins;
     }catch(ex){errs.push("Fila "+r.idx+": "+ex.message);}
   }
