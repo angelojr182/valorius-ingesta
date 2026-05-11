@@ -3,120 +3,243 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Valorius - Ingesta Masiva</title>
+<title>Valorius — Ingesta de Propiedades</title>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.19.0/dist/tabler-icons.min.css">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
-body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#f5f5f3;color:#1a1a1a;min-height:100vh;padding:2rem 1rem}
-.container{max-width:960px;margin:0 auto}
-.header{margin-bottom:1.5rem}
-.header h1{font-size:20px;font-weight:500;color:#1a1a1a;display:flex;align-items:center;gap:8px}
-.header p{font-size:13px;color:#666;margin-top:4px}
-.template-note{font-size:12px;color:#666;background:#efefed;border-radius:8px;padding:10px 14px;margin-bottom:1rem;border:0.5px solid #ddd}
-.template-note strong{color:#444;font-weight:500}
-.drop-zone{border:1.5px dashed #bbb;border-radius:12px;padding:2.5rem 1rem;text-align:center;cursor:pointer;background:#fff;margin-bottom:1rem;transition:background 0.15s}
-.drop-zone:hover,.drop-zone.drag-over{background:#f0f0ee}
-.drop-zone i{font-size:32px;color:#999;display:block;margin-bottom:8px}
-.drop-zone p{color:#666;margin:0 0 6px;font-size:13px}
-.drop-zone span{font-size:12px;color:#aaa}
-.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:1rem}
-.stat{background:#efefed;border-radius:8px;padding:12px}
-.stat-label{font-size:12px;color:#666;margin-bottom:4px}
-.stat-value{font-size:22px;font-weight:500;color:#1a1a1a}
-.c-ok{color:#0F6E56}
-.c-err{color:#993C1D}
-.filter-row{display:flex;gap:8px;margin-bottom:1rem;align-items:center}
-.filter-row select,.filter-row input{font-size:12px;padding:6px 10px;border-radius:8px;border:0.5px solid #ccc;background:#fff;color:#1a1a1a;outline:none;height:32px}
-.filter-row input{flex:1}
-.table-wrap{overflow-x:auto;border:0.5px solid #e0ddd6;border-radius:12px;margin-bottom:1rem;background:#fff}
+:root{
+  --green:#1D9E75;--green-dark:#0F6E56;--green-light:#E1F5EE;
+  --navy:#0E1E2E;--navy-mid:#1A3C5E;
+  --text:#1a1a1a;--text-sec:#666;--text-ter:#aaa;
+  --bg:#f5f5f3;--bg-card:#fff;--border:#e0ddd6;--border-light:#f0ede6;
+  --red-bg:#FAECE7;--red-text:#712B13;--red-border:#F0997B;
+}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+
+/* ── TOPBAR ── */
+.topbar{background:var(--navy);padding:0 2rem;display:flex;align-items:center;justify-content:space-between;height:56px;position:sticky;top:0;z-index:100}
+.brand{display:flex;align-items:center;gap:10px}
+.brand-mark{width:30px;height:30px;background:var(--green);border-radius:7px;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:14px;letter-spacing:-.5px}
+.brand-name{font-size:16px;font-weight:600;color:#fff;letter-spacing:-.3px}
+.brand-tag{font-size:11px;color:#8BA3BE;margin-left:4px;font-weight:400}
+.topbar-right{display:flex;align-items:center;gap:12px}
+.badge-tool{background:rgba(29,158,117,.2);color:#5DCAA5;font-size:11px;padding:3px 10px;border-radius:99px;font-weight:500}
+
+/* ── HERO ── */
+.hero{background:linear-gradient(135deg,var(--navy) 0%,#1A3C5E 100%);padding:2.5rem 2rem 2rem;border-bottom:1px solid rgba(255,255,255,.06)}
+.hero-inner{max-width:860px;margin:0 auto}
+.hero h1{font-size:22px;font-weight:600;color:#fff;margin-bottom:6px;letter-spacing:-.4px}
+.hero p{font-size:13px;color:#8BA3BE;line-height:1.6;max-width:520px}
+.hero-stats{display:flex;gap:24px;margin-top:1.5rem;flex-wrap:wrap}
+.hstat{display:flex;align-items:center;gap:8px}
+.hstat-dot{width:8px;height:8px;border-radius:50%;background:var(--green)}
+.hstat-txt{font-size:12px;color:#8BA3BE}
+.hstat-val{font-size:12px;color:#fff;font-weight:500}
+
+/* ── MAIN ── */
+.main{max-width:860px;margin:0 auto;padding:2rem}
+
+/* ── NOTE ── */
+.cols-note{background:#fff;border:0.5px solid var(--border);border-radius:10px;padding:12px 16px;margin-bottom:1.5rem;display:flex;gap:10px;align-items:flex-start}
+.cols-note i{color:var(--green);font-size:16px;margin-top:1px;flex-shrink:0}
+.cols-note-body{font-size:12px;color:var(--text-sec);line-height:1.6}
+.cols-note-body strong{color:var(--text);font-weight:500}
+.tag-geo{background:#EEEDFE;color:#3C3489;font-size:10px;padding:1px 7px;border-radius:99px;font-weight:500;display:inline-block;margin:0 2px}
+.tag-prop{background:#E8F0FA;color:#1A3C5E;font-size:10px;padding:1px 7px;border-radius:99px;font-weight:500;display:inline-block;margin:0 2px}
+.tag-list{background:var(--green-light);color:var(--green-dark);font-size:10px;padding:1px 7px;border-radius:99px;font-weight:500;display:inline-block;margin:0 2px}
+
+/* ── DROP ZONE ── */
+.drop-zone{border:1.5px dashed #c8c4bc;border-radius:12px;padding:2.5rem 1rem;text-align:center;cursor:pointer;background:#fff;margin-bottom:1.5rem;transition:all .15s}
+.drop-zone:hover,.drop-zone.drag-over{background:var(--green-light);border-color:var(--green)}
+.drop-zone i{font-size:36px;color:var(--text-ter);display:block;margin-bottom:10px}
+.drop-zone.drag-over i{color:var(--green)}
+.drop-zone p{color:var(--text-sec);margin:0 0 6px;font-size:13px;font-weight:500}
+.drop-zone span{font-size:12px;color:var(--text-ter)}
+
+/* ── STATS ── */
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:1.5rem}
+.stat{background:#fff;border:0.5px solid var(--border);border-radius:10px;padding:14px}
+.stat-label{font-size:11px;color:var(--text-sec);margin-bottom:6px;display:flex;align-items:center;gap:5px}
+.stat-value{font-size:24px;font-weight:600;color:var(--text)}
+.stat-value.ok{color:var(--green-dark)}
+.stat-value.err{color:#993C1D}
+.stat-value.ins{color:var(--navy-mid)}
+
+/* ── FILTERS ── */
+.filter-row{display:flex;gap:8px;margin-bottom:1rem;align-items:center;flex-wrap:wrap}
+.filter-row select,.filter-row input{font-size:12px;padding:6px 10px;border-radius:8px;border:0.5px solid var(--border);background:#fff;color:var(--text);outline:none;height:34px}
+.filter-row select:focus,.filter-row input:focus{border-color:var(--green)}
+.filter-row input{flex:1;min-width:140px}
+.fc{font-size:12px;color:var(--text-ter);white-space:nowrap}
+
+/* ── TABLE ── */
+.table-wrap{overflow-x:auto;border:0.5px solid var(--border);border-radius:10px;margin-bottom:1.5rem;background:#fff}
 table{width:100%;border-collapse:collapse;font-size:12px}
-th{background:#f5f5f3;padding:8px 10px;text-align:left;font-weight:500;color:#666;border-bottom:0.5px solid #e0ddd6;white-space:nowrap}
-td{padding:7px 10px;border-bottom:0.5px solid #f0ede6;color:#1a1a1a;vertical-align:top}
+th{background:var(--bg);padding:8px 10px;text-align:left;font-weight:500;color:var(--text-sec);border-bottom:0.5px solid var(--border);white-space:nowrap}
+td{padding:7px 10px;border-bottom:0.5px solid var(--border-light);color:var(--text);vertical-align:top}
 tr:last-child td{border-bottom:none}
-tr.row-ok{background:#E1F5EE18}
-tr.row-err{background:#FAECE718}
-.badge{display:inline-flex;align-items:center;gap:4px;padding:2px 8px;border-radius:99px;font-size:11px;font-weight:500}
-.badge-ok{background:#E1F5EE;color:#0F6E56}
-.badge-err{background:#FAECE7;color:#993C1D}
-.err-msg{font-size:11px;color:#993C1D;margin-top:3px}
-.btn{display:inline-flex;align-items:center;gap:6px;padding:8px 16px;border:0.5px solid #ccc;border-radius:8px;background:transparent;color:#1a1a1a;font-size:13px;cursor:pointer;transition:background 0.15s}
-.btn:hover{background:#efefed}
-.btn:disabled{opacity:0.4;cursor:not-allowed}
-.btn-primary{background:#1a1a1a;color:#fff;border-color:#1a1a1a}
-.btn-primary:hover{background:#333;border-color:#333}
+tr.row-ok{background:#E1F5EE0D}
+tr.row-err{background:#FAECE70D}
+.badge{display:inline-flex;align-items:center;gap:3px;padding:2px 9px;border-radius:99px;font-size:11px;font-weight:500}
+.badge-ok{background:var(--green-light);color:var(--green-dark)}
+.badge-err{background:var(--red-bg);color:var(--red-text)}
+.err-msg{font-size:11px;color:#993C1D;margin-top:3px;line-height:1.4}
+
+/* ── PROGRESS ── */
+.progress-wrap{margin-bottom:1rem}
+.progress-label{font-size:12px;color:var(--text-sec);margin-bottom:6px;display:flex;align-items:center;gap:6px}
+.progress-bar{height:4px;background:var(--border);border-radius:99px;overflow:hidden}
+.progress-fill{height:100%;background:var(--green);border-radius:99px;transition:width .2s}
+
+/* ── ACTIONS ── */
 .actions{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:1rem}
-.progress-bar{height:4px;background:#e0ddd6;border-radius:99px;overflow:hidden;margin:10px 0}
-.progress-fill{height:100%;background:#1D9E75;border-radius:99px;transition:width 0.2s}
-.progress-label{font-size:12px;color:#666;margin-bottom:4px}
-.result-ok{background:#E1F5EE;color:#085041;border:0.5px solid #5DCAA5;border-radius:8px;padding:1rem;margin-top:8px;font-size:13px}
-.result-err{background:#FAECE7;color:#712B13;border:0.5px solid #F0997B;border-radius:8px;padding:1rem;margin-top:8px;font-size:13px}
-.fc{font-size:12px;color:#aaa}
-@media(max-width:600px){.stats{grid-template-columns:repeat(2,1fr)}}
+.btn{display:inline-flex;align-items:center;gap:6px;padding:9px 18px;border:0.5px solid var(--border);border-radius:8px;background:transparent;color:var(--text);font-size:13px;cursor:pointer;font-weight:500;transition:all .15s}
+.btn:hover{background:var(--bg)}
+.btn:disabled{opacity:.4;cursor:not-allowed}
+.btn-primary{background:var(--navy);color:#fff;border-color:var(--navy)}
+.btn-primary:hover:not(:disabled){background:#0a1520;border-color:#0a1520}
+.btn-green{background:var(--green);color:#fff;border-color:var(--green)}
+.btn-green:hover:not(:disabled){background:var(--green-dark);border-color:var(--green-dark)}
+
+/* ── RESULTS ── */
+.result-ok{background:var(--green-light);color:#085041;border:0.5px solid #5DCAA5;border-radius:10px;padding:14px 16px;margin-top:8px;font-size:13px;display:flex;align-items:center;gap:8px}
+.result-err{background:var(--red-bg);color:var(--red-text);border:0.5px solid var(--red-border);border-radius:10px;padding:14px 16px;margin-top:8px;font-size:13px}
+
+/* ── FOOTER ── */
+.footer{border-top:0.5px solid var(--border);padding:1.5rem 2rem;text-align:center;font-size:11px;color:var(--text-ter);background:#fff;margin-top:2rem}
+.footer span{color:var(--green);font-weight:500}
+
+@media(max-width:600px){.stats{grid-template-columns:repeat(2,1fr)}.hero-stats{gap:14px}}
 </style>
 </head>
 <body>
-<div class="container">
-  <div class="header">
-    <h1><i class="ti ti-database-import"></i> Valorius &mdash; Ingesta Masiva</h1>
-    <p>Subi tu Excel, revisa errores fila por fila e inserta solo lo valido a Supabase.</p>
+
+<!-- TOPBAR -->
+<div class="topbar">
+  <div class="brand">
+    <div class="brand-mark">V</div>
+    <span class="brand-name">Valorius</span>
+    <span class="brand-tag">Inteligencia inmobiliaria</span>
   </div>
-  <div class="template-note">
-    <strong>Columnas requeridas:</strong> zona &middot; tipo_inmueble &middot; ciudad &middot; colonia &middot; precio &middot; moneda (USD/LPS) &middot; fecha_registro &middot; area_construccion &middot; area_terreno &middot; habitaciones &middot; banos &middot; estacionamientos &middot; fuente &middot; url &middot; subzona &middot; descripcion &middot; nivel_seguridad &middot; tipo_cambio
+  <div class="topbar-right">
+    <span class="badge-tool"><i class="ti ti-database-import" style="font-size:11px;vertical-align:-1px;margin-right:3px"></i>Ingesta de datos</span>
   </div>
-  <div class="drop-zone" id="dropZone">
-    <i class="ti ti-file-spreadsheet"></i>
-    <p>Arrastra tu archivo Excel aqui</p>
-    <span>o haz click para seleccionar (.xlsx, .xls, .csv)</span>
-    <input type="file" id="fileInput" accept=".xlsx,.xls,.csv" style="display:none">
-  </div>
-  <div id="previewSection" style="display:none">
-    <div class="stats">
-      <div class="stat"><div class="stat-label">Total filas</div><div class="stat-value" id="statTotal">0</div></div>
-      <div class="stat"><div class="stat-label">Validas</div><div class="stat-value c-ok" id="statOk">0</div></div>
-      <div class="stat"><div class="stat-label">Con errores</div><div class="stat-value c-err" id="statErr">0</div></div>
-      <div class="stat"><div class="stat-label">Insertadas</div><div class="stat-value" id="statInserted">0</div></div>
+</div>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-inner">
+    <h1>Centro de ingesta de propiedades</h1>
+    <p>Cargá tu archivo Excel, validá cada fila contra el catálogo de zonas e insertá solo los registros correctos directo a Supabase.</p>
+    <div class="hero-stats">
+      <div class="hstat"><div class="hstat-dot"></div><span class="hstat-txt">Zonas válidas:</span><span class="hstat-val">16</span></div>
+      <div class="hstat"><div class="hstat-dot"></div><span class="hstat-txt">Subzonas:</span><span class="hstat-val">28</span></div>
+      <div class="hstat"><div class="hstat-dot"></div><span class="hstat-txt">Proyectos:</span><span class="hstat-val">14</span></div>
+      <div class="hstat"><div class="hstat-dot"></div><span class="hstat-txt">Validación:</span><span class="hstat-val">Automática fila a fila</span></div>
     </div>
+  </div>
+</div>
+
+<!-- MAIN -->
+<div class="main">
+
+  <!-- NOTA DE COLUMNAS -->
+  <div class="cols-note">
+    <i class="ti ti-info-circle"></i>
+    <div class="cols-note-body">
+      <strong>Columnas requeridas en tu Excel:</strong>
+      <span class="tag-geo">zona *</span>
+      <span class="tag-geo">subzona</span>
+      <span class="tag-geo">proyecto</span>
+      <span class="tag-prop">ciudad *</span>
+      <span class="tag-prop">colonia *</span>
+      <span class="tag-prop">tipo_inmueble *</span>
+      <span class="tag-prop">habitaciones</span>
+      <span class="tag-prop">banos</span>
+      <span class="tag-prop">estacionamientos</span>
+      <span class="tag-prop">nivel_seguridad</span>
+      <span class="tag-prop">descripcion</span>
+      <span class="tag-list">precio *</span>
+      <span class="tag-list">moneda *</span>
+      <span class="tag-list">fecha_registro *</span>
+      <span class="tag-list">area_construccion</span>
+      <span class="tag-list">area_terreno</span>
+      <span class="tag-list">fuente</span>
+      <span class="tag-list">url</span>
+      <span class="tag-list">tipo_cambio</span>
+    </div>
+  </div>
+
+  <!-- DROP ZONE -->
+  <div class="drop-zone" id="dz">
+    <i class="ti ti-file-spreadsheet"></i>
+    <p>Arrastrá tu archivo Excel aquí</p>
+    <span>o hacé click para seleccionar &nbsp;·&nbsp; .xlsx &nbsp;·&nbsp; .xls &nbsp;·&nbsp; .csv</span>
+    <input type="file" id="fi" accept=".xlsx,.xls,.csv" style="display:none">
+  </div>
+
+  <!-- PREVIEW -->
+  <div id="ps" style="display:none">
+    <div class="stats">
+      <div class="stat"><div class="stat-label"><i class="ti ti-list" style="font-size:13px"></i>Total filas</div><div class="stat-value" id="s1">0</div></div>
+      <div class="stat"><div class="stat-label"><i class="ti ti-check" style="font-size:13px;color:var(--green-dark)"></i>Válidas</div><div class="stat-value ok" id="s2">0</div></div>
+      <div class="stat"><div class="stat-label"><i class="ti ti-alert-circle" style="font-size:13px;color:#993C1D"></i>Con errores</div><div class="stat-value err" id="s3">0</div></div>
+      <div class="stat"><div class="stat-label"><i class="ti ti-database" style="font-size:13px;color:var(--navy-mid)"></i>Insertadas</div><div class="stat-value ins" id="s4">0</div></div>
+    </div>
+
     <div class="filter-row">
-      <select id="filterStatus">
+      <select id="fs">
         <option value="all">Todas las filas</option>
-        <option value="ok">Solo validas</option>
+        <option value="ok">Solo válidas</option>
         <option value="err">Solo con error</option>
       </select>
-      <input type="text" id="filterText" placeholder="Buscar zona, colonia...">
-      <span class="fc" id="filterCount"></span>
+      <input type="text" id="ft" placeholder="Buscar zona, colonia, proyecto...">
+      <span class="fc" id="fc"></span>
     </div>
+
     <div class="table-wrap">
       <table>
         <thead>
-          <tr><th>#</th><th>Estado</th><th>Zona</th><th>Tipo</th><th>Ciudad</th><th>Colonia</th><th>Precio</th><th>Moneda</th><th>Area m2</th><th>Hab.</th><th>Fuente</th><th>Fecha</th></tr>
+          <tr>
+            <th>#</th><th>Estado</th><th>Zona</th><th>Subzona</th><th>Proyecto</th>
+            <th>Tipo</th><th>Colonia</th><th>Precio</th><th>Moneda</th>
+            <th>Área m²</th><th>Hab.</th><th>Fuente</th><th>Fecha</th>
+          </tr>
         </thead>
-        <tbody id="tableBody"></tbody>
+        <tbody id="tb"></tbody>
       </table>
     </div>
-    <div id="progressWrap" style="display:none">
-      <div class="progress-label" id="progressLabel">Insertando...</div>
-      <div class="progress-bar"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
+
+    <div id="pw" style="display:none" class="progress-wrap">
+      <div class="progress-label"><i class="ti ti-loader-2" style="font-size:13px"></i><span id="pl">Insertando...</span></div>
+      <div class="progress-bar"><div class="progress-fill" id="pf" style="width:0%"></div></div>
     </div>
+
     <div class="actions">
-      <button class="btn btn-primary" id="btnInsert" onclick="insertarValidas()">
-        <i class="ti ti-database-import"></i> Insertar filas validas
+      <button class="btn btn-green" id="bi" onclick="insertarValidas()">
+        <i class="ti ti-database-import"></i> Insertar filas válidas
       </button>
       <button class="btn" onclick="resetUI()">
         <i class="ti ti-refresh"></i> Cargar otro archivo
       </button>
     </div>
-    <div id="resultBox"></div>
+
+    <div id="rb"></div>
   </div>
 </div>
+
+<!-- FOOTER -->
+<div class="footer">
+  <span>Valorius</span> &nbsp;·&nbsp; Inteligencia inmobiliaria Honduras &nbsp;·&nbsp; Centro de ingesta v2.0 &nbsp;·&nbsp; Datos almacenados en Supabase
+</div>
+
 <script>
-var SURL="https://oxhzxistgyfvkhzncxpz.supabase.co";
-var SKEY="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im94aHp4aXN0Z3lmdmtoem5jeHB6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc2NTE0NzIsImV4cCI6MjA5MzIyNzQ3Mn0.-Q8XybmgAQdiBA5tAFi9LLoFnLuF0nJlsCh8WlTUjis";
+var SU="https://oxhzxistgyfvkhzncxpz.supabase.co", SK="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im94aHp4aXN0Z3lmdmtoem5jeHB6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc2NTE0NzIsImV4cCI6MjA5MzIyNzQ3Mn0.-Q8XybmgAQdiBA5tAFi9LLoFnLuF0nJlsCh8WlTUjis";
+
 var ZONAS={
-  "anillo perisférico":"c577b26f-3041-483b-be3c-6d849d35eca7",
-  "anillo perisferico":"c577b26f-3041-483b-be3c-6d849d35eca7",
-  "boulevard morazán":"ee434960-b814-4e28-83de-d9580534a1c0",
-  "boulevard morazan":"ee434960-b814-4e28-83de-d9580534a1c0",
+  "anillo periferico":"c577b26f-3041-483b-be3c-6d849d35eca7",
+  "anillo periférico":"c577b26f-3041-483b-be3c-6d849d35eca7",
   "bulevar morazan":"7fd29b38-d38f-4e8d-8007-976ef5d1bc71",
   "bulevar morazán":"7fd29b38-d38f-4e8d-8007-976ef5d1bc71",
   "colonia palmira":"3847381f-a39a-4371-bbc5-c8ba054a2b50",
@@ -126,23 +249,25 @@ var ZONAS={
   "las uvas":"3df25638-0d68-4726-b411-928fb7335ad5",
   "lomas del guijarro":"18e45e8c-1143-487e-aad3-5efd1af5b763",
   "miraflores":"b61262d0-7710-4da4-b01b-65efedf376a2",
-  "resedencial centro america":"d98733cb-130a-4a1d-849a-57fa8562713f",
-  "residencial centro america":"d98733cb-130a-4a1d-849a-57fa8562713f",
+  "residencial centroamerica":"d98733cb-130a-4a1d-849a-57fa8562713f",
+  "residencial centroamérica":"d98733cb-130a-4a1d-849a-57fa8562713f",
   "residencial el sauce":"8e11848a-54a9-484e-98aa-ebf35ce7b77e",
   "residencial portal del bosque 1":"b77619bc-b0d5-4ed2-a3e9-c65eaa9f5b66",
   "residencial villa elena":"ab73c240-311e-4b1f-a081-15cccb0c6f7b",
   "residencial zarahemla ii":"4924abf6-7379-432d-99df-99702eb56e9e",
-  "los robles":"8d6639c9-6de7-4766-94c8-954160d6f796",
-  "san ignacio":"3924ec4a-bd5e-4871-8dc3-3d1e3d78d887"
+  "roble oeste":"8d6639c9-6de7-4766-94c8-954160d6f796"
 };
+
 var TIPOS={
   "apartamento":"cb828362-900b-4cf8-9e7c-d1f5b15d4aa5",
   "casa":"8c4efee8-42c2-43ee-b4de-82a64798365e",
   "terreno":"d6006231-4bc5-4375-a6c2-1381089aea84"
 };
-var parsedRows=[],filteredRows=[];
-function norm(s){return String(s||"").toLowerCase().trim().normalize("NFD").replace(/[\u0300-\u036f]/g,"");}
-function parseDate(v){
+
+var PR=[],FR=[];
+
+function nm(s){return String(s||"").toLowerCase().trim().normalize("NFD").replace(/[\u0300-\u036f]/g,"");}
+function pd(v){
   if(!v)return null;
   if(typeof v==="number"){var d=new Date(Math.round((v-25569)*86400*1000));return d.toISOString().split("T")[0];}
   var s=String(v).trim();
@@ -151,133 +276,185 @@ function parseDate(v){
   if(p.length===3){if(p[2].length===4)return p[2]+"-"+p[1].padStart(2,"0")+"-"+p[0].padStart(2,"0");return p[0]+"-"+p[1].padStart(2,"0")+"-"+p[2].padStart(2,"0");}
   return null;
 }
-function validar(row){
-  var e=[],zid=ZONAS[norm(row.zona)],tid=TIPOS[norm(row.tipo_inmueble)],
-      mon=String(row.moneda||"").toUpperCase().trim(),fec=parseDate(row.fecha_registro);
-  if(!row.zona)e.push("zona vacia");else if(!zid)e.push('zona no existe: "'+row.zona+'"');
-  if(!row.tipo_inmueble)e.push("tipo_inmueble vacio");else if(!tid)e.push('tipo no existe: "'+row.tipo_inmueble+'"');
-  if(!row.ciudad)e.push("ciudad vacia");
-  if(!row.colonia)e.push("colonia vacia");
-  if(!row.precio||isNaN(Number(row.precio))||Number(row.precio)<=0)e.push("precio invalido");
+
+function vl(row){
+  var e=[],zid=ZONAS[nm(row.zona)],tid=TIPOS[nm(row.tipo_inmueble)],
+      mon=String(row.moneda||"").toUpperCase().trim(),fec=pd(row.fecha_registro);
+  if(!row.zona)e.push("zona vacía");else if(!zid)e.push('zona no existe: "'+row.zona+'"');
+  if(!row.tipo_inmueble)e.push("tipo_inmueble vacío");else if(!tid)e.push('tipo no existe: "'+row.tipo_inmueble+'"');
+  if(!row.ciudad)e.push("ciudad vacía");
+  if(!row.colonia)e.push("colonia vacía");
+  if(!row.precio||isNaN(+row.precio)||+row.precio<=0)e.push("precio inválido");
   if(!["USD","LPS"].includes(mon))e.push("moneda debe ser USD o LPS");
-  if(!row.fecha_registro)e.push("fecha_registro vacia");else if(!fec)e.push("fecha invalida");
-  if(row.habitaciones!==""&&row.habitaciones!==undefined&&(isNaN(Number(row.habitaciones))||Number(row.habitaciones)<0||Number(row.habitaciones)>20))e.push("habitaciones 0-20");
-  if(row.banos!==""&&row.banos!==undefined&&(isNaN(Number(row.banos))||Number(row.banos)<0||Number(row.banos)>20))e.push("banos 0-20");
-  if(row.estacionamientos!==""&&row.estacionamientos!==undefined&&(isNaN(Number(row.estacionamientos))||Number(row.estacionamientos)<0||Number(row.estacionamientos)>10))e.push("estacionamientos 0-10");
-  if(row.area_construccion&&(isNaN(Number(row.area_construccion))||Number(row.area_construccion)<=0))e.push("area_construccion invalida");
-  if(row.area_terreno&&(isNaN(Number(row.area_terreno))||Number(row.area_terreno)<=0))e.push("area_terreno invalida");
+  if(!row.fecha_registro)e.push("fecha_registro vacía");else if(!fec)e.push("fecha inválida");
+  if(row.habitaciones!==""&&row.habitaciones!==undefined&&(isNaN(+row.habitaciones)||+row.habitaciones<0||+row.habitaciones>20))e.push("habitaciones 0-20");
+  if(row.banos!==""&&row.banos!==undefined&&(isNaN(+row.banos)||+row.banos<0||+row.banos>20))e.push("baños 0-20");
+  if(row.estacionamientos!==""&&row.estacionamientos!==undefined&&(isNaN(+row.estacionamientos)||+row.estacionamientos<0||+row.estacionamientos>10))e.push("estacionamientos 0-10");
+  if(row.area_construccion&&(isNaN(+row.area_construccion)||+row.area_construccion<=0))e.push("area_construccion inválida");
+  if(row.area_terreno&&(isNaN(+row.area_terreno)||+row.area_terreno<=0))e.push("area_terreno inválida");
   return{e:e,zid:zid,tid:tid,mon:mon,fec:fec};
 }
-function esc(s){return String(s||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");}
-function renderTable(rows){
-  var tb=document.getElementById("tableBody");tb.innerHTML="";
+
+function ec(s){return String(s||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");}
+
+function rt(rows){
+  var tb=document.getElementById("tb");tb.innerHTML="";
   rows.forEach(function(r){
-    var tr=document.createElement("tr");tr.className=r.valid?"row-ok":"row-err";
-    tr.innerHTML="<td style='color:#aaa'>"+r.idx+"</td>"+
-      "<td><span class='badge "+(r.valid?"badge-ok":"badge-err")+"'>"+(r.valid?"valida":"error")+"</span>"+
-      (r.valid?"":"<div class='err-msg'>"+esc(r.errores.join(" - "))+"</div>")+"</td>"+
-      "<td>"+esc(r.row.zona)+"</td><td>"+esc(r.row.tipo_inmueble)+"</td>"+
-      "<td>"+esc(r.row.ciudad)+"</td><td>"+esc(r.row.colonia)+"</td>"+
-      "<td>"+(r.row.precio?Number(r.row.precio).toLocaleString():"")+"</td>"+
-      "<td>"+esc(r.row.moneda)+"</td>"+
-      "<td>"+(r.row.area_construccion||r.row.area_terreno||"")+"</td>"+
-      "<td>"+(r.row.habitaciones||"")+"</td>"+
-      "<td>"+esc(r.row.fuente||"")+"</td>"+
-      "<td>"+esc(String(r.row.fecha_registro||""))+"</td>";
+    var tr=document.createElement("tr");tr.className=r.ok?"row-ok":"row-err";
+    tr.innerHTML="<td style='color:var(--text-ter)'>"+r.i+"</td>"+
+      "<td><span class='badge "+(r.ok?"badge-ok":"badge-err")+"'>"+
+      "<i class='ti "+(r.ok?"ti-check":"ti-x")+"' style='font-size:10px'></i>"+
+      (r.ok?"válida":"error")+"</span>"+
+      (r.ok?"":"<div class='err-msg'>"+ec(r.e.join(" · "))+"</div>")+"</td>"+
+      "<td>"+ec(r.d.zona||"")+"</td>"+
+      "<td>"+ec(r.d.subzona||"")+"</td>"+
+      "<td>"+ec(r.d.proyecto||"")+"</td>"+
+      "<td>"+ec(r.d.tipo_inmueble||"")+"</td>"+
+      "<td>"+ec(r.d.colonia||"")+"</td>"+
+      "<td>"+(r.d.precio?Number(r.d.precio).toLocaleString():"")+"</td>"+
+      "<td>"+ec(r.d.moneda||"")+"</td>"+
+      "<td>"+(r.d.area_construccion||r.d.area_terreno||"")+"</td>"+
+      "<td>"+(r.d.habitaciones||"")+"</td>"+
+      "<td>"+ec(r.d.fuente||"")+"</td>"+
+      "<td>"+ec(String(r.d.fecha_registro||""))+"</td>";
     tb.appendChild(tr);
   });
 }
-function filtrar(){
-  var st=document.getElementById("filterStatus").value,tx=norm(document.getElementById("filterText").value);
-  filteredRows=parsedRows.filter(function(r){
-    if(st==="ok"&&!r.valid)return false;
-    if(st==="err"&&r.valid)return false;
-    if(tx&&!norm(JSON.stringify(r.row)).includes(tx))return false;
+
+function fl(){
+  var st=document.getElementById("fs").value,tx=nm(document.getElementById("ft").value);
+  FR=PR.filter(function(r){
+    if(st==="ok"&&!r.ok)return false;
+    if(st==="err"&&r.ok)return false;
+    if(tx&&!nm(JSON.stringify(r.d)).includes(tx))return false;
     return true;
   });
-  renderTable(filteredRows);
-  document.getElementById("filterCount").textContent="Mostrando "+filteredRows.length+" de "+parsedRows.length;
+  rt(FR);
+  document.getElementById("fc").textContent="Mostrando "+FR.length+" de "+PR.length;
 }
-document.getElementById("filterStatus").addEventListener("change",filtrar);
-document.getElementById("filterText").addEventListener("input",filtrar);
-function procesarArchivo(file){
-  var reader=new FileReader();
-  reader.onload=function(e){
+document.getElementById("fs").addEventListener("change",fl);
+document.getElementById("ft").addEventListener("input",fl);
+
+function pf2(file){
+  var rd=new FileReader();
+  rd.onload=function(e){
     try{
-      var wb=XLSX.read(e.target.result,{type:"array"}),ws=wb.Sheets[wb.SheetNames[0]],
+      var wb=XLSX.read(e.target.result,{type:"array"}),
+          ws=wb.Sheets[wb.SheetNames[0]],
           data=XLSX.utils.sheet_to_json(ws,{defval:""});
-      if(!data.length){alert("Archivo vacio.");return;}
-      parsedRows=data.map(function(row,i){
-        var v=validar(row);
-        return{idx:i+2,row:row,errores:v.e,valid:v.e.length===0,zid:v.zid,tid:v.tid,mon:v.mon,fec:v.fec};
+      if(!data.length){alert("Archivo vacío.");return;}
+      PR=data.map(function(row,i){
+        var v=vl(row);
+        return{i:i+2,d:row,e:v.e,ok:v.e.length===0,zid:v.zid,tid:v.tid,mon:v.mon,fec:v.fec};
       });
-      var ok=parsedRows.filter(function(r){return r.valid;}).length;
-      document.getElementById("statTotal").textContent=parsedRows.length;
-      document.getElementById("statOk").textContent=ok;
-      document.getElementById("statErr").textContent=parsedRows.length-ok;
-      document.getElementById("statInserted").textContent="0";
-      document.getElementById("previewSection").style.display="block";
-      document.getElementById("dropZone").style.display="none";
-      document.getElementById("resultBox").innerHTML="";
-      filteredRows=parsedRows;renderTable(filteredRows);
-      document.getElementById("filterCount").textContent="Mostrando "+filteredRows.length+" de "+parsedRows.length;
-    }catch(err){alert("Error: "+err.message);}
+      var ok=PR.filter(function(r){return r.ok;}).length;
+      document.getElementById("s1").textContent=PR.length;
+      document.getElementById("s2").textContent=ok;
+      document.getElementById("s3").textContent=PR.length-ok;
+      document.getElementById("s4").textContent="0";
+      document.getElementById("ps").style.display="block";
+      document.getElementById("dz").style.display="none";
+      document.getElementById("rb").innerHTML="";
+      FR=PR;rt(FR);
+      document.getElementById("fc").textContent="Mostrando "+FR.length+" de "+PR.length;
+    }catch(err){alert("Error leyendo archivo: "+err.message);}
   };
-  reader.readAsArrayBuffer(file);
+  rd.readAsArrayBuffer(file);
 }
-var dz=document.getElementById("dropZone");
-dz.addEventListener("click",function(){document.getElementById("fileInput").click();});
+
+var dz=document.getElementById("dz");
+dz.addEventListener("click",function(){document.getElementById("fi").click();});
 dz.addEventListener("dragover",function(e){e.preventDefault();dz.classList.add("drag-over");});
 dz.addEventListener("dragleave",function(){dz.classList.remove("drag-over");});
-dz.addEventListener("drop",function(e){e.preventDefault();dz.classList.remove("drag-over");if(e.dataTransfer.files[0])procesarArchivo(e.dataTransfer.files[0]);});
-document.getElementById("fileInput").addEventListener("change",function(e){if(e.target.files[0])procesarArchivo(e.target.files[0]);});
+dz.addEventListener("drop",function(e){e.preventDefault();dz.classList.remove("drag-over");if(e.dataTransfer.files[0])pf2(e.dataTransfer.files[0]);});
+document.getElementById("fi").addEventListener("change",function(e){if(e.target.files[0])pf2(e.target.files[0]);});
+
 async function sbPost(schema,table,body){
-  var r=await fetch(SURL+"/rest/v1/"+table,{method:"POST",headers:{"apikey":SKEY,"Authorization":"Bearer "+SKEY,"Content-Type":"application/json","Content-Profile":schema,"Accept-Profile":schema,"Prefer":"return=representation"},body:JSON.stringify(body)});
-  var data=await r.json();if(!r.ok)throw new Error(data.message||data.error||r.status);return data;
+  var r=await fetch(SU+"/rest/v1/"+table,{
+    method:"POST",
+    headers:{"apikey":SK,"Authorization":"Bearer "+SK,"Content-Type":"application/json",
+             "Content-Profile":schema,"Accept-Profile":schema,"Prefer":"return=representation"},
+    body:JSON.stringify(body)
+  });
+  var data=await r.json();
+  if(!r.ok)throw new Error(data.message||data.error||r.status);
+  return data;
 }
+
+async function getSubzonaId(zoneId, subzonaNombre){
+  if(!subzonaNombre)return null;
+  var r=await fetch(SU+"/rest/v1/dim_subzona?zone_id=eq."+zoneId+"&subzona=eq."+encodeURIComponent(subzonaNombre)+"&select=subzona_id",{
+    headers:{"apikey":SK,"Authorization":"Bearer "+SK,"Accept-Profile":"core"}
+  });
+  var data=await r.json();
+  return(data&&data.length>0)?data[0].subzona_id:null;
+}
+
+async function getProyectoId(zoneId, proyectoNombre){
+  if(!proyectoNombre)return null;
+  var r=await fetch(SU+"/rest/v1/dim_proyecto?zone_id=eq."+zoneId+"&proyecto=eq."+encodeURIComponent(proyectoNombre)+"&select=proyecto_id",{
+    headers:{"apikey":SK,"Authorization":"Bearer "+SK,"Accept-Profile":"core"}
+  });
+  var data=await r.json();
+  return(data&&data.length>0)?data[0].proyecto_id:null;
+}
+
 async function insertarValidas(){
-  var validas=parsedRows.filter(function(r){return r.valid;});
-  if(!validas.length){alert("No hay filas validas.");return;}
-  var btn=document.getElementById("btnInsert");btn.disabled=true;
-  document.getElementById("progressWrap").style.display="block";
-  var ins=0,errs=[];
-  for(var i=0;i<validas.length;i++){
-    var r=validas[i];
-    document.getElementById("progressFill").style.width=Math.round(i/validas.length*100)+"%";
-    document.getElementById("progressLabel").textContent="Insertando "+(i+1)+" de "+validas.length+"...";
+  var vv=PR.filter(function(r){return r.ok;});
+  if(!vv.length){alert("No hay filas válidas.");return;}
+  var btn=document.getElementById("bi");btn.disabled=true;
+  document.getElementById("pw").style.display="block";
+  var n=0,errs=[];
+  for(var i=0;i<vv.length;i++){
+    var r=vv[i];
+    document.getElementById("pf").style.width=Math.round(i/vv.length*100)+"%";
+    document.getElementById("pl").textContent="Insertando "+(i+1)+" de "+vv.length+"...";
     try{
-      var pb={zone_id:r.zid,property_type_id:r.tid,ciudad:String(r.row.ciudad).trim(),colonia:String(r.row.colonia).trim()};
-      if(r.row.habitaciones!==""&&r.row.habitaciones!==undefined)pb.habitaciones=Number(r.row.habitaciones);
-      if(r.row.banos!==""&&r.row.banos!==undefined)pb.banos=Number(r.row.banos);
-      if(r.row.estacionamientos!==""&&r.row.estacionamientos!==undefined)pb.estacionamientos=Number(r.row.estacionamientos);
-      if(r.row.nivel_seguridad)pb.nivel_seguridad=String(r.row.nivel_seguridad).trim();
-      if(r.row.subzona)pb.subzona=String(r.row.subzona).trim();
-      if(r.row.descripcion)pb.descripcion=String(r.row.descripcion).trim();
-      var pr=await sbPost("core","property",pb);
-      var pid=pr[0].property_id;
-      var lb={property_id:pid,fecha_registro:r.fec,precio_original:Number(r.row.precio),moneda:r.mon};
-      if(r.row.fuente)lb.fuente=String(r.row.fuente).trim();
-      if(r.row.url)lb.url=String(r.row.url).trim();
-      if(r.row.area_construccion!==""&&r.row.area_construccion!==undefined)lb.area_construccion=Number(r.row.area_construccion);
-      if(r.row.area_terreno!==""&&r.row.area_terreno!==undefined)lb.area_terreno=Number(r.row.area_terreno);
-      if(r.row.tipo_cambio!==""&&r.row.tipo_cambio!==undefined)lb.tipo_cambio=Number(r.row.tipo_cambio);
+      // Resolver subzona_id y proyecto_id
+      var szId=await getSubzonaId(r.zid, r.d.subzona||"");
+      var prId=await getProyectoId(r.zid, r.d.proyecto||"");
+
+      // Insertar property
+      var pb={zone_id:r.zid,property_type_id:r.tid,
+              ciudad:String(r.d.ciudad).trim(),colonia:String(r.d.colonia).trim()};
+      if(szId)pb.subzona_id=szId;
+      if(prId)pb.proyecto_id=prId;
+      // subzona como texto libre también (campo legacy)
+      if(r.d.proyecto&&String(r.d.proyecto).trim())pb.subzona=String(r.d.proyecto).trim();
+      else if(r.d.subzona&&String(r.d.subzona).trim())pb.subzona=String(r.d.subzona).trim();
+      if(r.d.habitaciones!==""&&r.d.habitaciones!==undefined)pb.habitaciones=+r.d.habitaciones;
+      if(r.d.banos!==""&&r.d.banos!==undefined)pb.banos=+r.d.banos;
+      if(r.d.estacionamientos!==""&&r.d.estacionamientos!==undefined)pb.estacionamientos=+r.d.estacionamientos;
+      if(r.d.nivel_seguridad)pb.nivel_seguridad=String(r.d.nivel_seguridad).trim();
+      if(r.d.descripcion)pb.descripcion=String(r.d.descripcion).trim();
+      var res=await sbPost("core","property",pb);
+      var pid=res[0].property_id;
+
+      // Insertar listing
+      var lb={property_id:pid,fecha_registro:r.fec,precio_original:+r.d.precio,moneda:r.mon};
+      if(r.d.fuente)lb.fuente=String(r.d.fuente).trim();
+      if(r.d.url)lb.url=String(r.d.url).trim();
+      if(r.d.area_construccion!==""&&r.d.area_construccion!==undefined)lb.area_construccion=+r.d.area_construccion;
+      if(r.d.area_terreno!==""&&r.d.area_terreno!==undefined)lb.area_terreno=+r.d.area_terreno;
+      if(r.d.tipo_cambio!==""&&r.d.tipo_cambio!==undefined)lb.tipo_cambio=+r.d.tipo_cambio;
       await sbPost("core","listing",lb);
-      ins++;document.getElementById("statInserted").textContent=ins;
-    }catch(ex){errs.push("Fila "+r.idx+": "+ex.message);}
+      n++;document.getElementById("s4").textContent=n;
+    }catch(ex){errs.push("Fila "+r.i+": "+ex.message);}
   }
-  document.getElementById("progressFill").style.width="100%";
-  document.getElementById("progressLabel").textContent="Completado.";
+  document.getElementById("pf").style.width="100%";
+  document.getElementById("pl").textContent="Completado.";
   btn.disabled=false;
-  var rb=document.getElementById("resultBox");
-  rb.innerHTML="<div class='result-ok'><strong>"+ins+" propiedades insertadas correctamente.</strong></div>"+
-    (errs.length?"<div class='result-err'><strong>"+errs.length+" errores:</strong><br>"+errs.join("<br>")+"</div>":"");
+  var rb=document.getElementById("rb");
+  rb.innerHTML="<div class='result-ok'><i class='ti ti-circle-check' style='font-size:18px'></i><strong>"+n+" propiedad"+(n!==1?"es":"")+" insertada"+(n!==1?"s":"")+" correctamente.</strong></div>"+
+    (errs.length?"<div class='result-err'><strong>"+errs.length+" error"+(errs.length!==1?"es":"")+":</strong><br><br>"+errs.join("<br>")+"</div>":"");
 }
+
 function resetUI(){
-  document.getElementById("previewSection").style.display="none";
-  document.getElementById("dropZone").style.display="block";
-  document.getElementById("fileInput").value="";
-  document.getElementById("progressWrap").style.display="none";
-  parsedRows=[];
+  document.getElementById("ps").style.display="none";
+  document.getElementById("dz").style.display="block";
+  document.getElementById("fi").value="";
+  document.getElementById("pw").style.display="none";
+  PR=[];
 }
 </script>
 </body>
