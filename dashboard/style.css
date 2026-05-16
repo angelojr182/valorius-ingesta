@@ -1,0 +1,212 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: Inter, sans-serif;
+  background: #0b0f19;
+  color: white;
+}
+
+.layout {
+  display: flex;
+  min-height: 100vh;
+}
+
+.sidebar {
+  width: 280px;
+  background: #0a0e17;
+  border-right: 1px solid rgba(255,255,255,0.05);
+  padding: 40px 24px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.brand span {
+  font-size: 11px;
+  letter-spacing: 0.3em;
+  color: rgba(255,255,255,0.4);
+}
+
+.brand h1 {
+  margin-top: 12px;
+  font-size: 32px;
+}
+
+nav {
+  margin-top: 50px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+nav a {
+  padding: 14px 16px;
+  border-radius: 16px;
+  color: rgba(255,255,255,0.6);
+  cursor: pointer;
+}
+
+nav a.active {
+  background: white;
+  color: black;
+  font-weight: 600;
+}
+
+.status-card {
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.05);
+  border-radius: 24px;
+  padding: 20px;
+}
+
+.status-card h3 {
+  margin-bottom: 18px;
+}
+
+.status-card p {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 10px;
+  color: rgba(255,255,255,0.7);
+}
+
+.live {
+  color: #4ade80;
+}
+
+.content {
+  flex: 1;
+  padding: 40px;
+}
+
+header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 40px;
+}
+
+.eyebrow {
+  color: rgba(255,255,255,0.4);
+  margin-bottom: 10px;
+}
+
+header h2 {
+  font-size: 44px;
+}
+
+.actions {
+  display: flex;
+  gap: 12px;
+}
+
+button {
+  border: none;
+  border-radius: 18px;
+  padding: 14px 18px;
+  cursor: pointer;
+}
+
+.primary {
+  background: #4ade80;
+  color: black;
+  font-weight: 600;
+}
+
+.secondary {
+  background: rgba(255,255,255,0.05);
+  color: white;
+}
+
+.kpis {
+  display: grid;
+  grid-template-columns: repeat(4,1fr);
+  gap: 18px;
+  margin-bottom: 30px;
+}
+
+.card,
+.chart-card,
+.signals-card {
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.05);
+  border-radius: 28px;
+}
+
+.card {
+  padding: 28px;
+}
+
+.card span {
+  color: rgba(255,255,255,0.5);
+}
+
+.card h3 {
+  font-size: 38px;
+  margin: 18px 0;
+}
+
+.card small {
+  color: #4ade80;
+}
+
+.main-grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 18px;
+}
+
+.chart-card,
+.signals-card {
+  padding: 28px;
+}
+
+.section-header p {
+  color: rgba(255,255,255,0.4);
+  margin-bottom: 6px;
+}
+
+.section-header h3 {
+  font-size: 28px;
+}
+
+.bars {
+  margin-top: 30px;
+  height: 320px;
+  display: flex;
+  align-items: flex-end;
+  gap: 10px;
+}
+
+.bars div {
+  flex: 1;
+  border-radius: 16px 16px 0 0;
+  background: linear-gradient(to top,#4ade80,#bbf7d0);
+}
+
+.signals-card ul {
+  margin-top: 24px;
+  list-style: none;
+}
+
+.signals-card li {
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.05);
+  padding: 16px;
+  border-radius: 18px;
+  margin-bottom: 12px;
+  display: flex;
+  justify-content: space-between;
+}
+
+.signals-card li span {
+  color: rgba(255,255,255,0.6);
+}
+
+.signals-card li strong {
+  color: #4ade80;
+}
