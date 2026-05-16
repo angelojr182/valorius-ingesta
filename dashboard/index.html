@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Valorius Intelligence</title>
 <link rel="stylesheet" href="style.css">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body>
 <div class="dashboard">
@@ -22,10 +23,10 @@
 </div>
 </header>
 <section class="kpi-grid">
-<div class="kpi-card amber"><span>Mediana USD/m²</span><h2>$1,420</h2><small>+8.2% mensual</small></div>
-<div class="kpi-card blue"><span>Inventario Activo</span><h2>105</h2><small>+12 nuevas propiedades</small></div>
-<div class="kpi-card slate"><span>Oportunidades</span><h2>18</h2><small>Alta confianza benchmark</small></div>
-<div class="kpi-card dark"><span>Zonas Monitoreadas</span><h2>16</h2><small>22 snapshots históricos</small></div>
+<div class="kpi-card amber"><span>Mediana USD/m²</span><h2 id="medianPrice">$1,420</h2><small>Benchmark vivo</small></div>
+<div class="kpi-card blue"><span>Inventario Activo</span><h2 id="inventoryCount">0</h2><small>Propiedades monitoreadas</small></div>
+<div class="kpi-card slate"><span>Listings Activos</span><h2 id="listingCount">0</h2><small>Feed operativo</small></div>
+<div class="kpi-card dark"><span>Zonas Monitoreadas</span><h2 id="zoneCount">0</h2><small><span id="snapshotCount">0</span> snapshots históricos</small></div>
 </section>
 <section class="main-grid">
 <div class="panel trend-panel">
@@ -47,95 +48,9 @@
 <polyline class="line blue" points="0,240 100,230 200,215 300,205 400,190 500,175 600,165 700,150"/>
 </svg>
 </div>
-<div class="trend-stats">
-<div><span>Zona más fuerte</span><strong>El Trapiche +12%</strong></div>
-<div><span>Mayor aceleración</span><strong>San Ignacio</strong></div>
-<div><span>Mayor absorción</span><strong>Miraflores</strong></div>
-</div>
-</div>
-<div class="panel pulse-panel">
-<div class="panel-header">
-<p>Pulse del Mercado</p>
-<h3>Insights Operativos</h3>
-</div>
-<div class="pulse-item gold-item">💎 5 propiedades debajo del benchmark aparecieron en 48h</div>
-<div class="pulse-item blue-item">📈 Apartamentos en San Ignacio aumentan +8% mensual</div>
-<div class="pulse-item slate-item">🏠 Casas premium tardan 22% más en rotación</div>
-<div class="pulse-item dark-item">📊 El Trapiche lidera crecimiento sostenido en snapshots</div>
-</div>
-</section>
-<section class="secondary-grid">
-<div class="panel map-panel">
-<div class="panel-header">
-<p>Mapa Operativo</p>
-<h3>Distribución y Presión del Mercado</h3>
-</div>
-<div class="market-matrix">
-<div class="matrix-card gold-zone"><h4>San Ignacio</h4><div class="matrix-value">+8.2%</div><p>Alta presión · 14 listings</p><small>Confidence 92%</small></div>
-<div class="matrix-card cyan-zone"><h4>Miraflores</h4><div class="matrix-value">+5.4%</div><p>Alta actividad · 11 listings</p><small>Velocity alta</small></div>
-<div class="matrix-card slate-zone"><h4>El Trapiche</h4><div class="matrix-value">+12.1%</div><p>Premium · 9 listings</p><small>Mayor absorción</small></div>
-<div class="matrix-card dark-zone"><h4>Palmira</h4><div class="matrix-value">+1.2%</div><p>Mercado estable</p><small>Baja volatilidad</small></div>
-<div class="matrix-card blue-zone"><h4>Lomas del Guijarro</h4><div class="matrix-value">+4.9%</div><p>Crecimiento sostenido</p><small>12 snapshots</small></div>
-<div class="matrix-card red-zone"><h4>La Sosa</h4><div class="matrix-value">-2.1%</div><p>Baja densidad</p><small>Liquidez reducida</small></div>
-</div>
-</div>
-<div class="panel benchmark-panel">
-<div class="panel-header">
-<p>Benchmarks</p>
-<h3>Casas vs Apartamentos</h3>
-</div>
-<div class="compare-grid">
-<div class="compare-card apartments">
-<h4>Apartamentos</h4>
-<div class="compare-number">$2,544</div>
-<p>Mayor crecimiento y velocidad.</p>
-<small>+8.4% mensual</small>
-</div>
-<div class="compare-card houses">
-<h4>Casas</h4>
-<div class="compare-number">$1,426</div>
-<p>Mercado más estable.</p>
-<small>+2.1% mensual</small>
-</div>
-</div>
-<table>
-<thead><tr><th>Zona</th><th>Casa</th><th>Apto.</th></tr></thead>
-<tbody>
-<tr><td>San Ignacio</td><td>$1,672</td><td>$2,544</td></tr>
-<tr><td>Miraflores</td><td>$1,359</td><td>$2,655</td></tr>
-<tr><td>El Trapiche</td><td>$1,890</td><td>$3,022</td></tr>
-</tbody>
-</table>
-</div>
-</section>
-<section class="bottom-grid">
-<div class="panel inventory-panel">
-<div class="panel-header">
-<p>Actividad Reciente</p>
-<h3>Feed Operativo</h3>
-</div>
-<table>
-<thead><tr><th>Propiedad</th><th>Tipo</th><th>USD/m²</th><th>Status</th></tr></thead>
-<tbody>
-<tr><td>Torre Artemisa</td><td>Apartamento</td><td>$2,993</td><td><span class="tag cyan">Oportunidad</span></td></tr>
-<tr><td>Casa La Sosa</td><td>Casa</td><td>$165</td><td><span class="tag gold">Outlier</span></td></tr>
-<tr><td>Apto. Cipreses</td><td>Apartamento</td><td>$1,870</td><td><span class="tag slate">Monitoreado</span></td></tr>
-<tr><td>Casa El Hatillo</td><td>Casa</td><td>$2,010</td><td><span class="tag dark">Premium</span></td></tr>
-</tbody>
-</table>
-</div>
-<div class="panel metrics-panel">
-<div class="panel-header">
-<p>Monitoreo Interno</p>
-<h3>Salud de Datos</h3>
-</div>
-<div class="metric-row red-metric"><span>Listings incompletos</span><strong>4</strong></div>
-<div class="metric-row cyan-metric"><span>Duplicados detectados</span><strong>2</strong></div>
-<div class="metric-row slate-metric"><span>Zonas sin benchmark</span><strong>3</strong></div>
-<div class="metric-row gold-metric"><span>Cobertura benchmark</span><strong>82%</strong></div>
-<div class="metric-row dark-metric"><span>Último snapshot válido</span><strong>15 Mayo 2026</strong></div>
-</div>
 </section>
 </div>
+<script src="supabase.js"></script>
+<script src="app.js"></script>
 </body>
 </html>
