@@ -23,7 +23,7 @@
 </div>
 </header>
 <section class="kpi-grid">
-<div class="kpi-card amber"><span>Mediana USD/m²</span><h2 id="medianPrice">$1,420</h2><small>Benchmark vivo</small></div>
+<div class="kpi-card amber"><span>Mediana USD/m²</span><h2 id="medianPrice">$0</h2><small>Benchmark vivo</small></div>
 <div class="kpi-card blue"><span>Inventario Activo</span><h2 id="inventoryCount">0</h2><small>Propiedades monitoreadas</small></div>
 <div class="kpi-card slate"><span>Listings Activos</span><h2 id="listingCount">0</h2><small>Feed operativo</small></div>
 <div class="kpi-card dark"><span>Zonas Monitoreadas</span><h2 id="zoneCount">0</h2><small><span id="snapshotCount">0</span> snapshots históricos</small></div>
@@ -47,6 +47,64 @@
 <polyline class="line slate" points="0,200 100,195 200,190 300,175 400,165 500,155 600,145 700,130"/>
 <polyline class="line blue" points="0,240 100,230 200,215 300,205 400,190 500,175 600,165 700,150"/>
 </svg>
+</div>
+</div>
+<div class="panel pulse-panel">
+<div class="panel-header">
+<p>Pulse del Mercado</p>
+<h3>Insights Operativos</h3>
+</div>
+<div id="liveInsights"></div>
+</div>
+</section>
+<section class="secondary-grid">
+<div class="panel map-panel">
+<div class="panel-header">
+<p>Mapa Operativo</p>
+<h3>Distribución y Presión del Mercado</h3>
+</div>
+<div class="market-matrix" id="marketMatrix"></div>
+</div>
+<div class="panel benchmark-panel">
+<div class="panel-header">
+<p>Benchmarks</p>
+<h3>Casas vs Apartamentos</h3>
+</div>
+<div class="compare-grid">
+<div class="compare-card apartments">
+<h4>Apartamentos</h4>
+<div class="compare-number">LIVE</div>
+<p>Mayor crecimiento y velocidad.</p>
+</div>
+<div class="compare-card houses">
+<h4>Casas</h4>
+<div class="compare-number">LIVE</div>
+<p>Mercado más estable.</p>
+</div>
+</div>
+</div>
+</section>
+<section class="bottom-grid">
+<div class="panel inventory-panel">
+<div class="panel-header">
+<p>Actividad Reciente</p>
+<h3>Feed Operativo</h3>
+</div>
+<table>
+<thead><tr><th>Propiedad</th><th>Tipo</th><th>USD/m²</th><th>Score</th></tr></thead>
+<tbody id="feedBody"></tbody>
+</table>
+</div>
+<div class="panel metrics-panel">
+<div class="panel-header">
+<p>Monitoreo Interno</p>
+<h3>Salud de Datos</h3>
+</div>
+<div class="metric-row red-metric"><span>Listings incompletos</span><strong>LIVE</strong></div>
+<div class="metric-row cyan-metric"><span>Duplicados detectados</span><strong>LIVE</strong></div>
+<div class="metric-row slate-metric"><span>Zonas sin benchmark</span><strong>LIVE</strong></div>
+<div class="metric-row gold-metric"><span>Cobertura benchmark</span><strong>LIVE</strong></div>
+<div class="metric-row dark-metric"><span>Último snapshot válido</span><strong>LIVE</strong></div>
 </div>
 </section>
 </div>
