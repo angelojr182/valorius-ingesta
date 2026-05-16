@@ -1,239 +1,145 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Valorius Dashboard</title>
-  <link rel="stylesheet" href="style.css" />
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Valorius Executive Dashboard</title>
+<link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <div class="layout">
-    <aside class="sidebar">
-      <div>
-        <div class="brand">
-          <span>VALORIUS</span>
-          <h1>Market Intelligence</h1>
-        </div>
-
-        <nav>
-          <a class="nav-link active" data-view="overview">Overview</a>
-          <a class="nav-link" data-view="opportunities">Radar de Oportunidades</a>
-          <a class="nav-link" data-view="benchmarks">Benchmarks</a>
-          <a class="nav-link" data-view="trends">Evolución Temporal</a>
-          <a class="nav-link" data-view="inventory">Inventario</a>
-          <a class="nav-link" data-view="catalog">Catálogo Geográfico</a>
-          <a class="nav-link" data-view="reports">Reportes</a>
-        </nav>
-      </div>
-
-      <div class="status-card">
-        <h3>Data Status</h3>
-        <p><span>Snapshots</span><strong>22</strong></p>
-        <p><span>Properties</span><strong>105</strong></p>
-        <p><span>Status</span><strong class="live">Live</strong></p>
-      </div>
-    </aside>
-
-    <main class="content">
-
-      <section class="view active-view" id="overview">
-        <header>
-          <div>
-            <p class="eyebrow">Internal Analytics Platform</p>
-            <h2>Tegucigalpa Market Overview</h2>
-          </div>
-
-          <div class="actions">
-            <button class="secondary">Export Report</button>
-            <button class="primary">Update Snapshot</button>
-          </div>
-        </header>
-
-        <section class="kpis">
-          <div class="card">
-            <span>Median Market Price</span>
-            <h3>$286K</h3>
-            <small>+4.8%</small>
-          </div>
-
-          <div class="card">
-            <span>Median USD/m²</span>
-            <h3>$1,420</h3>
-            <small>+2.1%</small>
-          </div>
-
-          <div class="card">
-            <span>Active Inventory</span>
-            <h3>105</h3>
-            <small>+12</small>
-          </div>
-
-          <div class="card">
-            <span>Undervalued Assets</span>
-            <h3>18</h3>
-            <small>High Potential</small>
-          </div>
-        </section>
-      </section>
-
-      <section class="view" id="opportunities">
-        <div class="module-header">
-          <p>Opportunity Engine</p>
-          <h2>Radar de Oportunidades</h2>
-        </div>
-
-        <div class="table-card">
-          <table>
-            <thead>
-              <tr>
-                <th>Zona</th>
-                <th>Tipo</th>
-                <th>USD/m²</th>
-                <th>Mercado</th>
-                <th>Score</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td>San Ignacio</td>
-                <td>Apartamento</td>
-                <td>$1,870</td>
-                <td>-14%</td>
-                <td>92</td>
-              </tr>
-              <tr>
-                <td>El Hatillo</td>
-                <td>Casa</td>
-                <td>$2,010</td>
-                <td>-11%</td>
-                <td>85</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </section>
-
-      <section class="view" id="benchmarks">
-        <div class="module-header">
-          <p>Benchmark Engine</p>
-          <h2>Zone Benchmarks</h2>
-        </div>
-
-        <div class="benchmark-grid">
-          <div class="benchmark-card">
-            <h3>San Ignacio</h3>
-            <p>$2,150/m²</p>
-            <span>14 muestras</span>
-          </div>
-
-          <div class="benchmark-card">
-            <h3>Lomas del Guijarro</h3>
-            <p>$1,780/m²</p>
-            <span>11 muestras</span>
-          </div>
-        </div>
-      </section>
-
-      <section class="view" id="trends">
-        <div class="module-header">
-          <p>Temporal Analytics</p>
-          <h2>Market Evolution</h2>
-        </div>
-
-        <div class="chart-card">
-          <div class="bars">
-            <div style="height:45%"></div>
-            <div style="height:52%"></div>
-            <div style="height:60%"></div>
-            <div style="height:72%"></div>
-            <div style="height:90%"></div>
-          </div>
-        </div>
-      </section>
-
-      <section class="view" id="inventory">
-        <div class="module-header">
-          <p>Inventory Feed</p>
-          <h2>Latest Properties</h2>
-        </div>
-
-        <div class="table-card">
-          <table>
-            <thead>
-              <tr>
-                <th>Zona</th>
-                <th>Tipo</th>
-                <th>Precio</th>
-                <th>Status</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td>Palmira</td>
-                <td>Apartamento</td>
-                <td>$310K</td>
-                <td>Active</td>
-              </tr>
-              <tr>
-                <td>Miraflores</td>
-                <td>Casa</td>
-                <td>$280K</td>
-                <td>Review</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </section>
-
-      <section class="view" id="catalog">
-        <div class="module-header">
-          <p>Geographic Catalog</p>
-          <h2>Zonas y Subzonas</h2>
-        </div>
-
-        <div class="benchmark-grid">
-          <div class="benchmark-card">
-            <h3>San Ignacio</h3>
-            <span>Residencial</span>
-          </div>
-
-          <div class="benchmark-card">
-            <h3>El Hatillo</h3>
-            <span>Premium</span>
-          </div>
-        </div>
-      </section>
-
-      <section class="view" id="reports">
-        <div class="module-header">
-          <p>Exports & Reports</p>
-          <h2>Reporting Center</h2>
-        </div>
-
-        <div class="report-actions">
-          <button class="primary">Export PDF</button>
-          <button class="secondary">Export Excel</button>
-        </div>
-      </section>
-
-    </main>
-  </div>
-
-  <script>
-    const links = document.querySelectorAll('.nav-link');
-    const views = document.querySelectorAll('.view');
-
-    links.forEach(link => {
-      link.addEventListener('click', () => {
-        links.forEach(l => l.classList.remove('active'));
-        views.forEach(v => v.classList.remove('active-view'));
-
-        link.classList.add('active');
-
-        const view = document.getElementById(link.dataset.view);
-        view.classList.add('active-view');
-      });
-    });
-  </script>
+<div class="dashboard">
+<header class="topbar">
+<div>
+<p class="eyebrow">VALORIUS · MARKET INTELLIGENCE</p>
+<h1>Tegucigalpa Real Estate Intelligence</h1>
+</div>
+<div class="top-actions">
+<div class="snapshot">
+<span>Snapshot</span>
+<strong>LIVE · MAY 2026</strong>
+</div>
+<button>Export Report</button>
+</div>
+</header>
+<section class="kpi-grid">
+<div class="kpi-card">
+<span>Median USD/m²</span>
+<h2>$1,420</h2>
+<small>+8.2% vs April</small>
+</div>
+<div class="kpi-card">
+<span>Active Inventory</span>
+<h2>105</h2>
+<small>+12 new listings</small>
+</div>
+<div class="kpi-card">
+<span>Opportunity Density</span>
+<h2>18</h2>
+<small>High confidence</small>
+</div>
+<div class="kpi-card">
+<span>Tracked Zones</span>
+<h2>16</h2>
+<small>22 snapshots stored</small>
+</div>
+</section>
+<section class="main-grid">
+<div class="panel trend-panel">
+<div class="panel-header">
+<div>
+<p>Market Trend Engine</p>
+<h3>USD/m² Evolution</h3>
+</div>
+</div>
+<div class="line-chart">
+<svg viewBox="0 0 600 260" preserveAspectRatio="none">
+<polyline points="0,210 80,195 160,180 240,170 320,150 400,130 480,110 600,90" fill="none" stroke="#7dd3fc" stroke-width="4" stroke-linecap="round" />
+</svg>
+</div>
+<div class="trend-footer">
+<div><span>San Ignacio</span><strong>$2,544/m²</strong></div>
+<div><span>Lomas del Guijarro</span><strong>$3,071/m²</strong></div>
+<div><span>Miraflores</span><strong>$2,655/m²</strong></div>
+</div>
+</div>
+<div class="panel radar-panel">
+<div class="panel-header">
+<div>
+<p>Opportunity Radar</p>
+<h3>Top Deals</h3>
+</div>
+</div>
+<div class="deal-card amber"><div><h4>Apto. Torre Cipreses</h4><span>San Ignacio</span></div><strong>-26%</strong></div>
+<div class="deal-card blue"><div><h4>Casa El Hatillo</h4><span>Premium Segment</span></div><strong>-18%</strong></div>
+<div class="deal-card slate"><div><h4>Torre Artemisa</h4><span>El Trapiche</span></div><strong>-11%</strong></div>
+</div>
+</section>
+<section class="secondary-grid">
+<div class="panel map-panel">
+<div class="panel-header">
+<div>
+<p>Geographic Intelligence</p>
+<h3>Market Heatmap</h3>
+</div>
+</div>
+<div class="map-placeholder">
+<div class="zone z1">San Ignacio</div>
+<div class="zone z2">Miraflores</div>
+<div class="zone z3">El Hatillo</div>
+<div class="zone z4">Lomas del Guijarro</div>
+</div>
+</div>
+<div class="panel benchmark-panel">
+<div class="panel-header">
+<div>
+<p>Benchmark Intelligence</p>
+<h3>Zone Benchmarks</h3>
+</div>
+</div>
+<table>
+<thead>
+<tr><th>Zone</th><th>Median</th><th>Spread</th></tr>
+</thead>
+<tbody>
+<tr><td>San Ignacio</td><td>$2,544</td><td>+12%</td></tr>
+<tr><td>El Trapiche</td><td>$3,022</td><td>+9%</td></tr>
+<tr><td>Miraflores</td><td>$2,655</td><td>+6%</td></tr>
+</tbody>
+</table>
+</div>
+</section>
+<section class="bottom-grid">
+<div class="panel inventory-panel">
+<div class="panel-header">
+<div>
+<p>Inventory Feed</p>
+<h3>Latest Market Activity</h3>
+</div>
+</div>
+<table>
+<thead>
+<tr><th>Property</th><th>Zone</th><th>USD/m²</th><th>Status</th></tr>
+</thead>
+<tbody>
+<tr><td>Torre Artemisa</td><td>El Trapiche</td><td>$2,993</td><td><span class="tag cyan">Opportunity</span></td></tr>
+<tr><td>Casa La Sosa</td><td>La Sosa</td><td>$165</td><td><span class="tag amber">Outlier</span></td></tr>
+<tr><td>Apto. Cipreses</td><td>San Ignacio</td><td>$1,870</td><td><span class="tag slate">Tracked</span></td></tr>
+</tbody>
+</table>
+</div>
+<div class="panel signals-panel">
+<div class="panel-header">
+<div>
+<p>Market Signals</p>
+<h3>Automated Insights</h3>
+</div>
+</div>
+<div class="signal-item">San Ignacio registra crecimiento sostenido durante 3 snapshots consecutivos.</div>
+<div class="signal-item">Opportunity density incrementando en apartamentos premium.</div>
+<div class="signal-item">Alta dispersión detectada en zonas de lujo.</div>
+<div class="signal-item">Nuevos listings creciendo +14% semanal.</div>
+</div>
+</section>
+</div>
 </body>
 </html>
