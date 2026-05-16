@@ -16,13 +16,13 @@
         </div>
 
         <nav>
-          <a class="active">Overview</a>
-          <a>Radar de Oportunidades</a>
-          <a>Benchmarks</a>
-          <a>Evolución Temporal</a>
-          <a>Inventario</a>
-          <a>Catálogo Geográfico</a>
-          <a>Reportes</a>
+          <a class="nav-link active" data-view="overview">Overview</a>
+          <a class="nav-link" data-view="opportunities">Radar de Oportunidades</a>
+          <a class="nav-link" data-view="benchmarks">Benchmarks</a>
+          <a class="nav-link" data-view="trends">Evolución Temporal</a>
+          <a class="nav-link" data-view="inventory">Inventario</a>
+          <a class="nav-link" data-view="catalog">Catálogo Geográfico</a>
+          <a class="nav-link" data-view="reports">Reportes</a>
         </nav>
       </div>
 
@@ -35,87 +35,205 @@
     </aside>
 
     <main class="content">
-      <header>
-        <div>
-          <p class="eyebrow">Internal Analytics Platform</p>
-          <h2>Tegucigalpa Market Overview</h2>
+
+      <section class="view active-view" id="overview">
+        <header>
+          <div>
+            <p class="eyebrow">Internal Analytics Platform</p>
+            <h2>Tegucigalpa Market Overview</h2>
+          </div>
+
+          <div class="actions">
+            <button class="secondary">Export Report</button>
+            <button class="primary">Update Snapshot</button>
+          </div>
+        </header>
+
+        <section class="kpis">
+          <div class="card">
+            <span>Median Market Price</span>
+            <h3>$286K</h3>
+            <small>+4.8%</small>
+          </div>
+
+          <div class="card">
+            <span>Median USD/m²</span>
+            <h3>$1,420</h3>
+            <small>+2.1%</small>
+          </div>
+
+          <div class="card">
+            <span>Active Inventory</span>
+            <h3>105</h3>
+            <small>+12</small>
+          </div>
+
+          <div class="card">
+            <span>Undervalued Assets</span>
+            <h3>18</h3>
+            <small>High Potential</small>
+          </div>
+        </section>
+      </section>
+
+      <section class="view" id="opportunities">
+        <div class="module-header">
+          <p>Opportunity Engine</p>
+          <h2>Radar de Oportunidades</h2>
         </div>
 
-        <div class="actions">
-          <button class="secondary">Export Report</button>
-          <button class="primary">Update Snapshot</button>
-        </div>
-      </header>
-
-      <section class="kpis">
-        <div class="card">
-          <span>Median Market Price</span>
-          <h3>$286K</h3>
-          <small>+4.8%</small>
-        </div>
-
-        <div class="card">
-          <span>Median USD/m²</span>
-          <h3>$1,420</h3>
-          <small>+2.1%</small>
-        </div>
-
-        <div class="card">
-          <span>Active Inventory</span>
-          <h3>105</h3>
-          <small>+12</small>
-        </div>
-
-        <div class="card">
-          <span>Undervalued Assets</span>
-          <h3>18</h3>
-          <small>High Potential</small>
+        <div class="table-card">
+          <table>
+            <thead>
+              <tr>
+                <th>Zona</th>
+                <th>Tipo</th>
+                <th>USD/m²</th>
+                <th>Mercado</th>
+                <th>Score</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>San Ignacio</td>
+                <td>Apartamento</td>
+                <td>$1,870</td>
+                <td>-14%</td>
+                <td>92</td>
+              </tr>
+              <tr>
+                <td>El Hatillo</td>
+                <td>Casa</td>
+                <td>$2,010</td>
+                <td>-11%</td>
+                <td>85</td>
+              </tr>
+            </tbody>
+          </table>
         </div>
       </section>
 
-      <section class="main-grid">
-        <div class="chart-card">
-          <div class="section-header">
-            <div>
-              <p>Market Trend</p>
-              <h3>Median USD/m² Evolution</h3>
-            </div>
+      <section class="view" id="benchmarks">
+        <div class="module-header">
+          <p>Benchmark Engine</p>
+          <h2>Zone Benchmarks</h2>
+        </div>
+
+        <div class="benchmark-grid">
+          <div class="benchmark-card">
+            <h3>San Ignacio</h3>
+            <p>$2,150/m²</p>
+            <span>14 muestras</span>
           </div>
 
+          <div class="benchmark-card">
+            <h3>Lomas del Guijarro</h3>
+            <p>$1,780/m²</p>
+            <span>11 muestras</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="view" id="trends">
+        <div class="module-header">
+          <p>Temporal Analytics</p>
+          <h2>Market Evolution</h2>
+        </div>
+
+        <div class="chart-card">
           <div class="bars">
             <div style="height:45%"></div>
             <div style="height:52%"></div>
-            <div style="height:48%"></div>
             <div style="height:60%"></div>
-            <div style="height:64%"></div>
-            <div style="height:58%"></div>
             <div style="height:72%"></div>
-            <div style="height:78%"></div>
-            <div style="height:74%"></div>
-            <div style="height:82%"></div>
             <div style="height:90%"></div>
-            <div style="height:96%"></div>
           </div>
-        </div>
-
-        <div class="signals-card">
-          <div class="section-header">
-            <div>
-              <p>Market Signals</p>
-              <h3>Intelligence Radar</h3>
-            </div>
-          </div>
-
-          <ul>
-            <li><span>Inventory Pressure</span><strong>Moderate</strong></li>
-            <li><span>Luxury Demand</span><strong>Increasing</strong></li>
-            <li><span>Price Dispersion</span><strong>High</strong></li>
-            <li><span>Opportunity Density</span><strong>Strong</strong></li>
-            <li><span>Market Stability</span><strong>Stable</strong></li>
-          </ul>
         </div>
       </section>
+
+      <section class="view" id="inventory">
+        <div class="module-header">
+          <p>Inventory Feed</p>
+          <h2>Latest Properties</h2>
+        </div>
+
+        <div class="table-card">
+          <table>
+            <thead>
+              <tr>
+                <th>Zona</th>
+                <th>Tipo</th>
+                <th>Precio</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Palmira</td>
+                <td>Apartamento</td>
+                <td>$310K</td>
+                <td>Active</td>
+              </tr>
+              <tr>
+                <td>Miraflores</td>
+                <td>Casa</td>
+                <td>$280K</td>
+                <td>Review</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="view" id="catalog">
+        <div class="module-header">
+          <p>Geographic Catalog</p>
+          <h2>Zonas y Subzonas</h2>
+        </div>
+
+        <div class="benchmark-grid">
+          <div class="benchmark-card">
+            <h3>San Ignacio</h3>
+            <span>Residencial</span>
+          </div>
+
+          <div class="benchmark-card">
+            <h3>El Hatillo</h3>
+            <span>Premium</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="view" id="reports">
+        <div class="module-header">
+          <p>Exports & Reports</p>
+          <h2>Reporting Center</h2>
+        </div>
+
+        <div class="report-actions">
+          <button class="primary">Export PDF</button>
+          <button class="secondary">Export Excel</button>
+        </div>
+      </section>
+
     </main>
   </div>
+
+  <script>
+    const links = document.querySelectorAll('.nav-link');
+    const views = document.querySelectorAll('.view');
+
+    links.forEach(link => {
+      link.addEventListener('click', () => {
+        links.forEach(l => l.classList.remove('active'));
+        views.forEach(v => v.classList.remove('active-view'));
+
+        link.classList.add('active');
+
+        const view = document.getElementById(link.dataset.view);
+        view.classList.add('active-view');
+      });
+    });
+  </script>
 </body>
 </html>
