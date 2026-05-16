@@ -24,7 +24,7 @@
 <section class="kpi-grid">
 <div class="kpi-card amber"><span>Mediana USD/m²</span><h2>$1,420</h2><small>+8.2% mensual</small></div>
 <div class="kpi-card blue"><span>Inventario Activo</span><h2>105</h2><small>+12 nuevas propiedades</small></div>
-<div class="kpi-card slate"><span>Oportunidades</span><h2>18</h2><small>Alta confianza</small></div>
+<div class="kpi-card slate"><span>Oportunidades</span><h2>18</h2><small>Alta confianza benchmark</small></div>
 <div class="kpi-card dark"><span>Zonas Monitoreadas</span><h2>16</h2><small>22 snapshots históricos</small></div>
 </section>
 <section class="main-grid">
@@ -52,7 +52,7 @@
 <div class="trend-stats">
 <div><span>Zona más fuerte</span><strong>El Trapiche +12%</strong></div>
 <div><span>Mayor aceleración</span><strong>San Ignacio</strong></div>
-<div><span>Mayor volatilidad</span><strong>Miraflores</strong></div>
+<div><span>Mayor absorción</span><strong>Miraflores</strong></div>
 </div>
 </div>
 <div class="panel pulse-panel">
@@ -62,10 +62,10 @@
 <h3>Insights Operativos</h3>
 </div>
 </div>
-<div class="pulse-item gold-item">💎 5 nuevas oportunidades detectadas esta semana</div>
-<div class="pulse-item blue-item">📈 San Ignacio aumenta +8% en apartamentos</div>
-<div class="pulse-item slate-item">🏠 Casas premium muestran menor rotación</div>
-<div class="pulse-item dark-item">⚠ Alta dispersión detectada en zonas de lujo</div>
+<div class="pulse-item gold-item">💎 5 propiedades debajo del benchmark aparecieron en 48h</div>
+<div class="pulse-item blue-item">📈 Apartamentos en San Ignacio aumentan +8% mensual</div>
+<div class="pulse-item slate-item">🏠 Casas premium tardan 22% más en rotación</div>
+<div class="pulse-item dark-item">📊 El Trapiche lidera crecimiento sostenido en snapshots</div>
 </div>
 </section>
 <section class="secondary-grid">
@@ -73,20 +73,16 @@
 <div class="panel-header">
 <div>
 <p>Mapa Operativo</p>
-<h3>Distribución del Mercado</h3>
+<h3>Distribución y Presión del Mercado</h3>
 </div>
 </div>
-<div class="bubble-map">
-<div class="bubble big gold-bubble">San Ignacio</div>
-<div class="bubble medium cyan-bubble">Miraflores</div>
-<div class="bubble medium slate-bubble">El Trapiche</div>
-<div class="bubble small dark-bubble">Palmira</div>
-<div class="bubble medium gold-bubble">Lomas del Guijarro</div>
-</div>
-<div class="map-legend">
-<span><i class="dot gold-dot"></i> Mayor crecimiento</span>
-<span><i class="dot cyan-dot"></i> Mayor actividad</span>
-<span><i class="dot slate-dot"></i> Mercado estable</span>
+<div class="heat-grid">
+<div class="heat-cell high">San Ignacio<br><small>Alta presión</small></div>
+<div class="heat-cell medium">Miraflores<br><small>Alta actividad</small></div>
+<div class="heat-cell high">El Trapiche<br><small>Premium</small></div>
+<div class="heat-cell low">Palmira<br><small>Estable</small></div>
+<div class="heat-cell medium">Lomas del Guijarro<br><small>Crecimiento</small></div>
+<div class="heat-cell low">La Sosa<br><small>Baja densidad</small></div>
 </div>
 </div>
 <div class="panel benchmark-panel">
@@ -100,18 +96,16 @@
 <div class="compare-card apartments">
 <h4>Apartamentos</h4>
 <div class="compare-number">$2,544</div>
-<p>San Ignacio lidera crecimiento premium.</p>
+<p>Mayor crecimiento y velocidad de mercado.</p>
 </div>
 <div class="compare-card houses">
 <h4>Casas</h4>
 <div class="compare-number">$1,426</div>
-<p>Mercado más estable y menor volatilidad.</p>
+<p>Mercado más estable y menos volátil.</p>
 </div>
 </div>
 <table>
-<thead>
-<tr><th>Zona</th><th>Casa</th><th>Apto.</th></tr>
-</thead>
+<thead><tr><th>Zona</th><th>Casa</th><th>Apto.</th></tr></thead>
 <tbody>
 <tr><td>San Ignacio</td><td>$1,672</td><td>$2,544</td></tr>
 <tr><td>Miraflores</td><td>$1,359</td><td>$2,655</td></tr>
@@ -129,12 +123,10 @@
 </div>
 </div>
 <table>
-<thead>
-<tr><th>Propiedad</th><th>Tipo</th><th>USD/m²</th><th>Status</th></tr>
-</thead>
+<thead><tr><th>Propiedad</th><th>Tipo</th><th>USD/m²</th><th>Status</th></tr></thead>
 <tbody>
 <tr><td>Torre Artemisa</td><td>Apartamento</td><td>$2,993</td><td><span class="tag cyan">Oportunidad</span></td></tr>
-<tr><td>Casa La Sosa</td><td>Casa</td><td>$165</td><td><span class="tag amber">Outlier</span></td></tr>
+<tr><td>Casa La Sosa</td><td>Casa</td><td>$165</td><td><span class="tag gold">Outlier</span></td></tr>
 <tr><td>Apto. Cipreses</td><td>Apartamento</td><td>$1,870</td><td><span class="tag slate">Monitoreado</span></td></tr>
 <tr><td>Casa El Hatillo</td><td>Casa</td><td>$2,010</td><td><span class="tag dark">Premium</span></td></tr>
 </tbody>
@@ -147,11 +139,11 @@
 <h3>Salud de Datos</h3>
 </div>
 </div>
-<div class="metric-row"><span>Listings incompletos</span><strong>4</strong></div>
-<div class="metric-row"><span>Duplicados detectados</span><strong>2</strong></div>
-<div class="metric-row"><span>Zonas sin benchmark</span><strong>3</strong></div>
-<div class="metric-row"><span>Calidad alta</span><strong>82%</strong></div>
-<div class="metric-row"><span>Último scrape</span><strong>Hace 12 min</strong></div>
+<div class="metric-row red-metric"><span>Listings incompletos</span><strong>4</strong></div>
+<div class="metric-row cyan-metric"><span>Duplicados detectados</span><strong>2</strong></div>
+<div class="metric-row slate-metric"><span>Zonas sin benchmark</span><strong>3</strong></div>
+<div class="metric-row gold-metric"><span>Cobertura benchmark</span><strong>82%</strong></div>
+<div class="metric-row dark-metric"><span>Último snapshot válido</span><strong>15 Mayo 2026</strong></div>
 </div>
 </section>
 </div>
