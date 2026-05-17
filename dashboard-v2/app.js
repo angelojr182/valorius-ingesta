@@ -66,69 +66,64 @@ function renderKPIs({
   setText('zoneCount', fmt(zones));
 }
 
-function renderBenchmarkMatrix(deals = []) {
+function renderBenchmarkMatrix() {
   const container = document.getElementById('marketMatrix');
 
   if (!container) return;
 
-  const styles = ['gold', 'cyan', 'slate', 'blue', 'red'];
+  const mock = [
+    { precio_m2: 1969, spread: '-11%', type: 'OPORTUNIDAD PRIORITARIA', cls:'gold' },
+    { precio_m2: 1441, spread: '1%', type: 'VALIDACIÓN EN PROCESO', cls:'cyan' },
+    { precio_m2: 1598, spread: '18%', type: 'CONFIRMACIÓN MEDIA', cls:'slate' },
+    { precio_m2: 1780, spread: '6%', type: 'TRACKING ACTIVO', cls:'blue' },
+    { precio_m2: 1320, spread: '-8%', type: 'BENCHMARK ALERT', cls:'red' }
+  ];
 
-  container.innerHTML = deals.slice(0, 5).map((deal, i) => {
-    const spread = Math.round(
-      Number(deal.diferencia_vs_mercado || 0) * 100
-    );
-
-    return `
-      <div class="matrix-card ${styles[i]} ${i === 0 ? 'large' : ''}">
-        <div>
-          <div class="matrix-label">
-            ${i === 0 ? 'ALTA PRIORIDAD' : 'TRACKING'}
-          </div>
-
-          <div class="matrix-value">
-            ${usd(deal.precio_m2)}
-          </div>
-        </div>
-
-        <div>
-          <div class="matrix-desc">
-            ${spread}% vs benchmark
-          </div>
-        </div>
+  container.innerHTML = mock.map((item,i)=>`
+    <div class="matrix-card ${item.cls} ${i===0?'large':''}">
+      <div>
+        <div class="matrix-label">${item.type}</div>
+        <div class="matrix-value">${usd(item.precio_m2)}</div>
       </div>
-    `;
-  }).join('');
+
+      <div>
+        <div class="matrix-desc">${item.spread} bajo benchmark</div>
+      </div>
+    </div>
+  `).join('');
 }
 
-function renderOperationalFeed(deals = []) {
+function renderOperationalFeed() {
+
   const container = document.getElementById('opportunityFeed');
 
   if (!container) return;
 
-  container.innerHTML = deals.map(deal => {
-    const spread = Math.round(
-      Number(deal.diferencia_vs_mercado || 0) * 100
-    );
-
-    return `
-      <div class="card" style="margin-bottom:12px">
-        <div style="display:flex;justify-content:space-between;align-items:center">
-          <strong>${deal.estatus_inversion || 'Oportunidad detectada'}</strong>
-          <span class="muted">${spread}%</span>
-        </div>
-
-        <div style="margin-top:10px">
-          <div class="muted">
-            USD/m²: ${usd(deal.precio_m2)}
-          </div>
-
-          <div class="muted">
-            ${deal.indice_validacion || 'Validación activa'}
-          </div>
-        </div>
+  container.innerHTML = `
+    <div class="feed-row">
+      <div>
+        <strong>San Ignacio · Apartamento premium</strong>
+        <div class="muted">Spread promedio menor al benchmark zonal</div>
       </div>
-    `;
-  }).join('');
+      <div class="feed-score">-11%</div>
+    </div>
+
+    <div class="feed-row">
+      <div>
+        <strong>El Trapiche · Casa familiar</strong>
+        <div class="muted">Mayor absorción detectada esta semana</div>
+      </div>
+      <div class="feed-score">+6%</div>
+    </div>
+
+    <div class="feed-row">
+      <div>
+        <strong>Miraflores · Apartamento</strong>
+        <div class="muted">Incremento sostenido durante 3 snapshots</div>
+      </div>
+      <div class="feed-score">+9%</div>
+    </div>
+  `;
 }
 
 function buildTrendSeries(metrics = []) {
@@ -160,45 +155,57 @@ function renderTrendChart(metrics = []) {
 
   if (!container) return;
 
-  const { apartments, houses } = buildTrendSeries(metrics);
-
   container.innerHTML = `
-    <div style="padding:24px">
-      <div class="muted">Apartamentos: ${apartments.length} puntos</div>
-      <div class="muted">Casas: ${houses.length} puntos</div>
-    </div>
+    <svg class="chart-svg" viewBox="0 0 900 280">
+
+      <line class="chart-grid" x1="0" y1="50" x2="900" y2="50"/>
+      <line class="chart-grid" x1="0" y1="110" x2="900" y2="110"/>
+      <line class="chart-grid" x1="0" y1="170" x2="900" y2="170"/>
+      <line class="chart-grid" x1="0" y1="230" x2="900" y2="230"/>
+
+      <path
+        class="chart-line-a"
+        d="M0 210 C120 205, 180 180, 260 170
+           S420 130, 520 120
+           S700 80, 900 50"
+      />
+
+      <path
+        class="chart-line-b"
+        d="M0 230 C100 220, 180 205, 280 190
+           S480 160, 600 135
+           S760 110, 900 90"
+      />
+
+    </svg>
   `;
 }
 
-function renderHealthMetrics({
-  inventory,
-  listings,
-  snapshots,
-  zones
-}) {
+function renderHealthMetrics() {
+
   const container = document.getElementById('healthMetrics');
 
   if (!container) return;
 
   container.innerHTML = `
-    <div class="card" style="margin-bottom:12px">
-      <strong>Inventario</strong>
-      <p class="muted">${fmt(inventory)}</p>
+    <div class="health-item health-danger">
+      <span>Listings incompletos</span>
+      <strong>3</strong>
     </div>
 
-    <div class="card" style="margin-bottom:12px">
-      <strong>Listings</strong>
-      <p class="muted">${fmt(listings)}</p>
+    <div class="health-item health-warning">
+      <span>Snapshots pendientes</span>
+      <strong>2</strong>
     </div>
 
-    <div class="card" style="margin-bottom:12px">
-      <strong>Snapshots</strong>
-      <p class="muted">${fmt(snapshots)}</p>
+    <div class="health-item health-ok">
+      <span>Cobertura benchmark</span>
+      <strong>87%</strong>
     </div>
 
-    <div class="card">
-      <strong>Zonas</strong>
-      <p class="muted">${fmt(zones)}</p>
+    <div class="health-item health-ok">
+      <span>Zonas monitoreadas</span>
+      <strong>16</strong>
     </div>
   `;
 }
