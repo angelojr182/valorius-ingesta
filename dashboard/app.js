@@ -19,15 +19,10 @@ async function loadDashboardMetrics() {
     document.getElementById('listingCount').textContent = listings || 0;
     document.getElementById('snapshotCount').textContent = snapshots || 0;
 
-    const { data: deals, error } = await sb
+    const { data: deals } = await sb
       .from('v_deals')
       .select('*')
       .limit(6);
-
-    if (error) {
-      console.error(error);
-      return;
-    }
 
     if (deals && deals.length > 0) {
       const avg = Math.round(
@@ -43,8 +38,33 @@ async function loadDashboardMetrics() {
       renderDataHealth(listings, snapshots);
     }
   } catch (err) {
-    console.error('Dashboard load error', err);
+    console.error(err);
   }
+}
+
+function renderMarketMatrix(deals) {
+  const container = document.getElementById('marketMatrix');
+  if (!container) return;
+
+  const styles = ['gold-zone large','cyan-zone','slate-zone','blue-zone','dark-zone','red-zone'];
+
+  container.innerHTML = deals.map((d, i) => {
+    const diff = Math.round(Number(d.diferencia_vs_mercado || 0) * 100);
+
+    return `
+      <div class="matrix-card ${styles[i] || 'slate-zone'}">
+        <div>
+          <h4>${i === 0 ? 'MEJOR OPORTUNIDAD' : 'MERCADO'}</h4>
+          <div class="matrix-value">$${Math.round(Number(d.precio_m2 || 0)).toLocaleString()}</div>
+        </div>
+
+        <div>
+          <p>${d.estatus_inversion.replace('⚖️','').replace('✨','')}</p>
+          <small>${diff}% vs benchmark · ${d.cantidad_muestras || 0} muestras</small>
+        </div>
+      </div>
+    `;
+  }).join('');
 }
 
 function renderOpportunityFeed(deals) {
@@ -53,41 +73,27 @@ function renderOpportunityFeed(deals) {
 
   tbody.innerHTML = deals.map(d => `
     <tr>
-      <td>${d.nota_analista?.slice(0, 24) || 'Propiedad'}</td>
-      <td>${d.estatus_inversion || '-'}</td>
+      <td>${d.nota_analista?.slice(0,30) || 'Propiedad'}</td>
+      <td>${d.estatus_inversion.replace('⚖️','').replace('✨','')}</td>
       <td>$${Math.round(Number(d.precio_m2 || 0)).toLocaleString()}</td>
-      <td><span class="tag cyan">${Math.round(Number(d.diferencia_vs_mercado || 0) * 100)}%</span></td>
+      <td><span class="tag cyan">${Math.round(Number(d.diferencia_vs_mercado || 0)*100)}%</span></td>
     </tr>
-  `).join('');
-}
-
-function renderMarketMatrix(deals) {
-  const container = document.getElementById('marketMatrix');
-  if (!container) return;
-
-  const styles = ['gold-zone','cyan-zone','slate-zone','blue-zone','dark-zone','red-zone'];
-
-  container.innerHTML = deals.map((d, i) => `
-    <div class="matrix-card ${styles[i % styles.length]}">
-      <h4>${d.estatus_inversion || 'Mercado'}</h4>
-      <div class="matrix-value">$${Math.round(Number(d.precio_m2 || 0)).toLocaleString()}</div>
-      <p>${d.indice_validacion || 'Validación activa'}</p>
-      <small>${d.cantidad_muestras || 0} muestras comparativas</small>
-    </div>
   `).join('');
 }
 
 function renderInsights(deals) {
   const container = document.getElementById('liveInsights');
-  if (!container) return;
 
-  const top = deals[0];
+  const best = deals[0];
+  const avgGap = Math.round(
+    deals.reduce((a,b)=>a+Number(b.diferencia_vs_mercado||0),0)/deals.length*100
+  );
 
   container.innerHTML = `
-    <div class="pulse-item gold-item">💎 ${top.estatus_inversion}</div>
-    <div class="pulse-item blue-item">📈 Diferencia mercado: ${Math.round(Number(top.diferencia_vs_mercado || 0) * 100)}%</div>
-    <div class="pulse-item slate-item">🏠 ${deals.length} oportunidades activas detectadas</div>
-    <div class="pulse-item dark-item">📊 ${top.indice_validacion}</div>
+    <div class="pulse-item gold-item">Zona premium detectada debajo del benchmark esperado.</div>
+    <div class="pulse-item blue-item">Spread promedio mercado: ${avgGap}%.</div>
+    <div class="pulse-item slate-item">${deals.length} propiedades activas en monitoreo intensivo.</div>
+    <div class="pulse-item dark-item">Mejor oportunidad actual: ${best.estatus_inversion.replace('✨','')}.</div>
   `;
 }
 
@@ -105,15 +111,15 @@ function renderBenchmark(deals) {
 
   const compare = document.querySelectorAll('.compare-number');
 
-  if (compare[0]) compare[0].textContent = `$${aptAvg.toLocaleString()}`;
-  if (compare[1]) compare[1].textContent = `$${houseAvg.toLocaleString()}`;
+  if(compare[0]) compare[0].textContent = `$${aptAvg.toLocaleString()}`;
+  if(compare[1]) compare[1].textContent = `$${houseAvg.toLocaleString()}`;
 }
 
 function renderDataHealth(listings, snapshots) {
   const metrics = document.querySelectorAll('.metric-row strong');
 
-  if(metrics[0]) metrics[0].textContent = Math.max(0, Math.floor(listings * 0.03));
-  if(metrics[1]) metrics[1].textContent = Math.max(0, Math.floor(listings * 0.01));
+  if(metrics[0]) metrics[0].textContent = Math.floor(listings * 0.03);
+  if(metrics[1]) metrics[1].textContent = Math.floor(listings * 0.01);
   if(metrics[2]) metrics[2].textContent = '2';
   if(metrics[3]) metrics[3].textContent = '87%';
   if(metrics[4]) metrics[4].textContent = `${snapshots} snapshots`;
