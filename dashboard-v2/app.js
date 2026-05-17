@@ -1,0 +1,1 @@
+console.log('Valorius Dashboard V2 initialized');
