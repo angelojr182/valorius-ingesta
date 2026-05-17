@@ -1,5 +1,5 @@
-const SUPABASE_URL = 'TU_SUPABASE_URL';
-const SUPABASE_KEY = 'TU_SUPABASE_ANON_KEY';
+const SUPABASE_URL = 'https://oxhzxistgyfvkhzncxpz.supabase.co';
+const SUPABASE_KEY = 'sb_publishable_vZB304c2981HDbVtTydDIg_mMAVeGth';
 
 const headers = {
   apikey: SUPABASE_KEY,
