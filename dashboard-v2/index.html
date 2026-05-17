@@ -1,16 +1,57 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Valorius Dashboard V2</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="./style.css" />
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Valorius Intelligence</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="./style.css" />
 </head>
 <body>
-  <div id="app"></div>
-  <script src="./app.js"></script>
+<div class="dashboard">
+<section class="hero">
+<div>
+<p class="muted">VALORIUS · MARKET INTELLIGENCE</p>
+<h1>Monitoreo operativo inmobiliario en tiempo real</h1>
+</div>
+<div>
+<p class="muted">Estado plataforma</p>
+<strong id="platformStatus">LIVE</strong>
+</div>
+</section>
+<section class="grid kpi-grid">
+<div class="card"><p class="muted">Inventario</p><div class="metric" id="inventoryCount">0</div></div>
+<div class="card"><p class="muted">Zonas monitoreadas</p><div class="metric" id="zoneCount">0</div></div>
+<div class="card"><p class="muted">Listings activos</p><div class="metric" id="listingCount">0</div></div>
+<div class="card"><p class="muted">Snapshots históricos</p><div class="metric" id="snapshotCount">0</div></div>
+</section>
+<section class="grid panel-grid" style="margin-top:24px">
+<div class="card">
+<h2 class="section-title">Snapshots históricos por zona</h2>
+<div class="trend-chart" id="trendChart"></div>
+</div>
+<div class="card">
+<h2 class="section-title">Benchmarks prioritarios</h2>
+<div class="matrix" id="marketMatrix"></div>
+</div>
+</section>
+<section class="grid panel-grid" style="margin-top:24px">
+<div class="card">
+<h2 class="section-title">Tendencia apartamentos vs casas</h2>
+<div class="trend-chart" id="propertyTrend"></div>
+</div>
+<div class="card">
+<h2 class="section-title">Salud operativa</h2>
+<div id="healthMetrics"></div>
+</div>
+</section>
+<section class="card" style="margin-top:24px">
+<h2 class="section-title">Feed operativo de oportunidades</h2>
+<div id="opportunityFeed"></div>
+</section>
+</div>
+<script src="./app.js"></script>
 </body>
 </html>
