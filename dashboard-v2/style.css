@@ -1,1 +1,32 @@
-body{margin:0;background:radial-gradient(circle at top left,#1e293b 0%,#0b1020 35%,#060b16 100%);color:#f8fafc;font-family:Inter,sans-serif;overflow-x:hidden}.dashboard{max-width:1600px;margin:auto;padding:28px}.hero{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:28px}.hero h1{font-size:56px;line-height:1;font-weight:800;max-width:760px}.hero p{color:#94a3b8}.grid{display:grid;gap:20px}.kpi-grid{grid-template-columns:repeat(4,1fr)}.panel-grid{grid-template-columns:1.7fr 1fr}.card{background:linear-gradient(180deg,rgba(20,28,45,.96),rgba(13,18,30,.96));border:1px solid rgba(255,255,255,.06);border-radius:28px;padding:24px;box-shadow:0 18px 50px rgba(0,0,0,.35);backdrop-filter:blur(18px)}.metric{font-size:52px;font-weight:800;margin-top:10px}.muted{color:#94a3b8}.matrix{display:grid;grid-template-columns:1.2fr 1fr;grid-template-rows:180px 180px;gap:16px}.matrix-card{border-radius:24px;padding:22px;display:flex;flex-direction:column;justify-content:space-between}.gold{background:linear-gradient(180deg,#2a2414,#151922)}.cyan{background:linear-gradient(180deg,#132b35,#151922)}.slate{background:linear-gradient(180deg,#202733,#151922)}.blue{background:linear-gradient(180deg,#16263d,#151922)}.red{background:linear-gradient(180deg,#2d1b23,#151922)}.large{grid-row:span 2}.matrix-value{font-size:72px;font-weight:800}.matrix-label{font-size:13px;letter-spacing:.16em;color:#cbd5e1;text-transform:uppercase}.matrix-desc{font-size:22px;font-weight:700}.section-title{font-size:34px;font-weight:700;color:#f3f4f6;margin-bottom:22px}.trend-chart{height:340px;border-radius:24px;border:1px solid rgba(255,255,255,.05);background:rgba(255,255,255,.02)}@media(max-width:1200px){.kpi-grid,.panel-grid{grid-template-columns:1fr}.matrix{grid-template-columns:1fr;grid-template-rows:auto}.large{grid-row:auto}}
+// REEMPLAZAR renderTrendChart()
+
+function renderTrendChart(metrics = []) {
+  const container = document.getElementById('trendChart');
+
+  if (!container) return;
+
+  container.innerHTML = `
+    <svg class="chart-svg" viewBox="0 0 900 280">
+
+      <line class="chart-grid" x1="0" y1="50" x2="900" y2="50"/>
+      <line class="chart-grid" x1="0" y1="110" x2="900" y2="110"/>
+      <line class="chart-grid" x1="0" y1="170" x2="900" y2="170"/>
+      <line class="chart-grid" x1="0" y1="230" x2="900" y2="230"/>
+
+      <path
+        class="chart-line-a"
+        d="M0 210 C120 205, 180 180, 260 170
+           S420 130, 520 120
+           S700 80, 900 50"
+      />
+
+      <path
+        class="chart-line-b"
+        d="M0 230 C100 220, 180 205, 280 190
+           S480 160, 600 135
+           S760 110, 900 90"
+      />
+
+    </svg>
+  `;
+}
