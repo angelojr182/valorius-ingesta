@@ -4,25 +4,31 @@ async function loadDashboardMetrics() {
   try {
     const [
       { count: inventory },
-      { count: zones },
       { count: listings },
       { count: snapshots }
     ] = await Promise.all([
       sb.from('property').select('*', { count: 'exact', head: true }),
-      sb.from('dim_zone').select('*', { count: 'exact', head: true }),
       sb.from('listing').select('*', { count: 'exact', head: true }),
       sb.from('market_snapshot').select('*', { count: 'exact', head: true })
     ]);
-
-    document.getElementById('inventoryCount').textContent = inventory || 0;
-    document.getElementById('zoneCount').textContent = zones || 0;
-    document.getElementById('listingCount').textContent = listings || 0;
-    document.getElementById('snapshotCount').textContent = snapshots || 0;
 
     const { data: deals } = await sb
       .from('v_deals')
       .select('*')
       .limit(6);
+
+    const zoneSet = new Set();
+
+    if (deals) {
+      deals.forEach(d => {
+        if (d.estatus_inversion) zoneSet.add(d.estatus_inversion);
+      });
+    }
+
+    document.getElementById('inventoryCount').textContent = inventory || 0;
+    document.getElementById('zoneCount').textContent = zoneSet.size || 0;
+    document.getElementById('listingCount').textContent = listings || 0;
+    document.getElementById('snapshotCount').textContent = snapshots || 0;
 
     if (deals && deals.length > 0) {
       const avg = Math.round(
@@ -54,13 +60,13 @@ function renderMarketMatrix(deals) {
     return `
       <div class="matrix-card ${styles[i] || 'slate-zone'}">
         <div>
-          <h4>${i === 0 ? 'MEJOR OPORTUNIDAD' : 'MERCADO'}</h4>
+          <h4>${i === 0 ? 'OPORTUNIDAD PRIORITARIA' : 'MERCADO'}</h4>
           <div class="matrix-value">$${Math.round(Number(d.precio_m2 || 0)).toLocaleString()}</div>
         </div>
 
         <div>
-          <p>${d.estatus_inversion.replace('⚖️','').replace('✨','')}</p>
-          <small>${diff}% vs benchmark · ${d.cantidad_muestras || 0} muestras</small>
+          <p>${diff}% bajo benchmark</p>
+          <small>${d.cantidad_muestras || 0} comparativas · ${d.indice_validacion || 'Validación activa'}</small>
         </div>
       </div>
     `;
@@ -74,7 +80,7 @@ function renderOpportunityFeed(deals) {
   tbody.innerHTML = deals.map(d => `
     <tr>
       <td>${d.nota_analista?.slice(0,30) || 'Propiedad'}</td>
-      <td>${d.estatus_inversion.replace('⚖️','').replace('✨','')}</td>
+      <td>${d.indice_validacion || '-'}</td>
       <td>$${Math.round(Number(d.precio_m2 || 0)).toLocaleString()}</td>
       <td><span class="tag cyan">${Math.round(Number(d.diferencia_vs_mercado || 0)*100)}%</span></td>
     </tr>
@@ -90,10 +96,10 @@ function renderInsights(deals) {
   );
 
   container.innerHTML = `
-    <div class="pulse-item gold-item">Zona premium detectada debajo del benchmark esperado.</div>
-    <div class="pulse-item blue-item">Spread promedio mercado: ${avgGap}%.</div>
-    <div class="pulse-item slate-item">${deals.length} propiedades activas en monitoreo intensivo.</div>
-    <div class="pulse-item dark-item">Mejor oportunidad actual: ${best.estatus_inversion.replace('✨','')}.</div>
+    <div class="pulse-item gold-item">Spread promedio mercado: ${avgGap}%.</div>
+    <div class="pulse-item blue-item">${deals.length} propiedades bajo monitoreo prioritario.</div>
+    <div class="pulse-item slate-item">Mayor descuento detectado vs benchmark.</div>
+    <div class="pulse-item dark-item">${best.indice_validacion || 'Validación activa'}.</div>
   `;
 }
 
