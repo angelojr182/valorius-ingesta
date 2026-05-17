@@ -3,435 +3,337 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Valorius — Market Intelligence</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@300;400;500&family=Syne:wght@600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap" rel="stylesheet">
+<title>Valorius — Operaciones</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600&family=DM+Mono:wght@300;400;500&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 :root{
-  --bg:#07090f;
-  --s1:#0d1018;--s2:#111520;--s3:#161b28;
-  --b1:rgba(255,255,255,.06);--b2:rgba(255,255,255,.1);--b3:rgba(255,255,255,.15);
-  --txt:#e8ecf4;--t2:#8896b0;--t3:#3d4f6a;
-  --grn:#10d98a;--grn2:rgba(16,217,138,.1);--grn3:rgba(16,217,138,.06);
-  --amb:#f5a623;--amb2:rgba(245,166,35,.1);
-  --blu:#4d9fff;--blu2:rgba(77,159,255,.1);
-  --red:#ff5252;--red2:rgba(255,82,82,.1);
-  --slt:#7c8fa8;
-  --r:10px;--r2:7px;
+  --ink:#f7f8fa;--ink2:#9aa5b8;--ink3:#3d4f6a;--ink4:#1e2a3a;
+  --bg:#080c12;--s1:#0c1018;--s2:#10161f;--s3:#141c28;
+  --b1:rgba(255,255,255,.05);--b2:rgba(255,255,255,.09);
+  --grn:#2dd4a0;--grn-d:rgba(45,212,160,.08);
+  --amb:#e8a030;--amb-d:rgba(232,160,48,.08);
+  --blu:#5b9cf6;--blu-d:rgba(91,156,246,.08);
+  --red:#e05252;--red-d:rgba(224,82,82,.08);
+  --slt:#6b7f96;
+  --r:12px;--r2:8px;
 }
-html{scroll-behavior:smooth}
-body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--txt);min-height:100vh;overflow-x:hidden;font-size:13px;line-height:1.5}
-body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse 100% 60% at 0% 0%,rgba(16,217,138,.04) 0%,transparent 60%),radial-gradient(ellipse 60% 40% at 100% 100%,rgba(77,159,255,.03) 0%,transparent 50%);pointer-events:none;z-index:0}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--ink);min-height:100vh;font-size:13px;line-height:1.6;-webkit-font-smoothing:antialiased}
 
-/* ── LAYOUT ── */
-.wrap{max-width:1700px;margin:auto;padding:28px 24px 80px;position:relative;z-index:1}
+/* Background subtle gradient */
+body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse 80% 50% at 20% 0%,rgba(45,212,160,.025) 0%,transparent 55%);pointer-events:none;z-index:0}
 
-/* ── TOPBAR ── */
-.topbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:32px;padding-bottom:20px;border-bottom:1px solid var(--b1)}
-.brand{display:flex;align-items:center;gap:12px}
-.brand-mark{width:32px;height:32px;border-radius:8px;background:linear-gradient(135deg,var(--grn),#0ab870);display:flex;align-items:center;justify-content:center;flex-shrink:0}
-.brand-mark svg{width:16px;height:16px;fill:none;stroke:#000;stroke-width:2.5;stroke-linecap:round}
-.brand-text{}
-.brand-name{font-family:'Syne',sans-serif;font-size:17px;font-weight:800;letter-spacing:-.3px;color:var(--txt)}
-.brand-sub{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:.18em;color:var(--t3);text-transform:uppercase;margin-top:1px}
-.topbar-center{text-align:center}
-.topbar-title{font-family:'Syne',sans-serif;font-size:22px;font-weight:700;letter-spacing:-.4px}
-.topbar-sub{font-family:'DM Mono',monospace;font-size:10px;color:var(--t2);letter-spacing:.1em;margin-top:3px}
-.topbar-right{display:flex;align-items:center;gap:10px}
-.live-chip{display:flex;align-items:center;gap:6px;background:var(--grn3);border:1px solid rgba(16,217,138,.2);border-radius:20px;padding:5px 12px;font-family:'DM Mono',monospace;font-size:10px;color:var(--grn);letter-spacing:.1em}
-.live-dot{width:5px;height:5px;border-radius:50%;background:var(--grn);animation:pulse 2s infinite}
-@keyframes pulse{0%,100%{opacity:1;box-shadow:0 0 0 0 rgba(16,217,138,.5)}50%{box-shadow:0 0 0 4px rgba(16,217,138,0)}}
-.btn{background:var(--s2);border:1px solid var(--b2);color:var(--t2);padding:7px 14px;border-radius:var(--r2);font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.06em;cursor:pointer;transition:all .15s}
-.btn:hover{border-color:var(--grn);color:var(--grn);background:var(--grn3)}
+.wrap{max-width:1560px;margin:auto;padding:32px 28px 100px;position:relative;z-index:1}
 
-/* ── ERROR ── */
-#err{display:none;margin-bottom:16px;padding:11px 14px;background:var(--red2);border:1px solid rgba(255,82,82,.3);border-radius:var(--r2);font-family:'DM Mono',monospace;font-size:10px;color:var(--red)}
+/* ── HEADER ── */
+header{display:flex;justify-content:space-between;align-items:center;padding-bottom:24px;margin-bottom:36px;border-bottom:1px solid var(--b1)}
+.h-brand{display:flex;align-items:center;gap:14px}
+.h-logo{width:36px;height:36px;border-radius:10px;background:linear-gradient(135deg,var(--grn),#1ab882);display:flex;align-items:center;justify-content:center}
+.h-logo svg{width:18px;height:18px;fill:none;stroke:#fff;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round}
+.h-name{font-family:'Playfair Display',serif;font-size:20px;font-weight:600;letter-spacing:-.2px;color:var(--ink)}
+.h-sub{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:.18em;color:var(--ink3);text-transform:uppercase;margin-top:1px}
+.h-center{text-align:center}
+.h-title{font-family:'Playfair Display',serif;font-size:18px;font-weight:400;color:var(--ink2);letter-spacing:-.1px}
+.h-date{font-family:'DM Mono',monospace;font-size:10px;color:var(--ink3);margin-top:3px}
+.h-right{display:flex;align-items:center;gap:10px}
+.chip{display:flex;align-items:center;gap:5px;padding:5px 12px;border-radius:20px;background:var(--grn-d);border:1px solid rgba(45,212,160,.18);font-family:'DM Mono',monospace;font-size:9px;color:var(--grn);letter-spacing:.12em}
+.dot{width:5px;height:5px;border-radius:50%;background:var(--grn);animation:blink 2s infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
+.btn{padding:7px 16px;border-radius:var(--r2);background:var(--s2);border:1px solid var(--b2);color:var(--ink2);font-family:'DM Mono',monospace;font-size:9px;letter-spacing:.08em;cursor:pointer;transition:all .15s;text-transform:uppercase}
+.btn:hover{border-color:var(--grn);color:var(--grn)}
 
-/* ── SECTION HEADER ── */
-.sec-hdr{display:flex;align-items:center;gap:10px;margin-bottom:12px}
-.sec-hdr-label{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:.2em;color:var(--t3);text-transform:uppercase}
-.sec-hdr::after{content:'';flex:1;height:1px;background:var(--b1)}
+/* ── SECTION LABEL ── */
+.sec{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:.2em;color:var(--ink3);text-transform:uppercase;margin-bottom:14px;display:flex;align-items:center;gap:12px}
+.sec::after{content:'';flex:1;height:1px;background:var(--b1)}
 
-/* ── KPI ROW PRINCIPAL ── */
-.kpi-row{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-bottom:10px}
-.kpi{background:var(--s1);border:1px solid var(--b1);border-radius:var(--r);padding:16px;position:relative;overflow:hidden;transition:border-color .2s}
+/* ── KPI STRIP ── */
+.kpi-strip{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-bottom:10px}
+.kpi{background:var(--s1);border:1px solid var(--b1);border-radius:var(--r2);padding:18px 16px;position:relative;transition:border-color .2s}
 .kpi:hover{border-color:var(--b2)}
-.kpi::after{content:'';position:absolute;bottom:0;left:0;right:0;height:1px;background:var(--accent,var(--grn));opacity:.4}
-.kpi-label{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:.15em;text-transform:uppercase;color:var(--t3);margin-bottom:7px}
-.kpi-val{font-family:'Syne',sans-serif;font-size:clamp(22px,2.2vw,32px);font-weight:800;letter-spacing:-.5px;color:var(--txt);line-height:1}
-.kpi-val.accent{color:var(--accent)}
-.kpi-meta{font-family:'DM Mono',monospace;font-size:9px;color:var(--t3);margin-top:5px}
+.kpi::after{content:'';position:absolute;inset:0;border-radius:var(--r2);background:radial-gradient(ellipse 80% 60% at 0% 0%,var(--tint,rgba(45,212,160,.06)),transparent 60%);pointer-events:none}
+.kpi-label{font-family:'DM Mono',monospace;font-size:8px;letter-spacing:.16em;color:var(--ink3);text-transform:uppercase;margin-bottom:8px}
+.kpi-val{font-family:'Playfair Display',serif;font-size:clamp(24px,2.2vw,34px);font-weight:600;color:var(--ink);line-height:1;margin-bottom:4px}
+.kpi-sub{font-family:'DM Mono',monospace;font-size:9px;color:var(--ink3)}
+.k-grn{--tint:rgba(45,212,160,.07)}.k-amb{--tint:rgba(232,160,48,.07)}.k-blu{--tint:rgba(91,156,246,.06)}.k-red{--tint:rgba(224,82,82,.06)}
 
-/* ── MARKET STATUS ROW ── */
-.status-row{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:24px}
-.status-card{background:var(--s1);border:1px solid var(--b1);border-radius:var(--r2);padding:12px 14px;display:flex;align-items:center;gap:12px;border-left:2px solid var(--accent)}
-.status-num{font-family:'Syne',sans-serif;font-size:26px;font-weight:800;color:var(--accent);line-height:1;flex-shrink:0}
-.status-info{}
-.status-info .sl{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:var(--t3)}
-.status-info .sv{font-size:12px;font-weight:500;color:var(--t2);margin-top:1px}
+/* ── MARKET STATUS ── */
+.status-strip{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:36px}
+.sc{background:var(--s1);border:1px solid var(--b1);border-left:2px solid var(--c);border-radius:var(--r2);padding:14px 16px;display:flex;align-items:center;gap:14px}
+.sc-num{font-family:'Playfair Display',serif;font-size:30px;font-weight:600;color:var(--c);flex-shrink:0;line-height:1}
+.sc-label{font-family:'DM Mono',monospace;font-size:8px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink3);margin-bottom:2px}
+.sc-desc{font-size:11px;color:var(--ink2)}
 
-/* ── MAIN GRID ── */
-.g3{display:grid;grid-template-columns:2fr 1fr 1fr;gap:12px;margin-bottom:12px}
-.g2{display:grid;grid-template-columns:1.6fr 1fr;gap:12px;margin-bottom:12px}
-.g2b{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px}
+/* ── GRID LAYOUTS ── */
+.g3{display:grid;grid-template-columns:2.2fr 1fr 1fr;gap:12px;margin-bottom:12px;align-items:start}
+.g2{display:grid;grid-template-columns:1.7fr 1fr;gap:12px;margin-bottom:12px;align-items:start}
 .gfull{margin-bottom:12px}
 
 /* ── CARD ── */
 .card{background:var(--s1);border:1px solid var(--b1);border-radius:var(--r);overflow:hidden}
-.card-hdr{padding:14px 16px 10px;border-bottom:1px solid var(--b1);display:flex;align-items:flex-start;justify-content:space-between}
-.card-hdr-left{}
-.ch-label{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:.15em;text-transform:uppercase;color:var(--t3);margin-bottom:3px}
-.ch-title{font-family:'Syne',sans-serif;font-size:14px;font-weight:700;letter-spacing:-.2px;color:var(--txt)}
-.ch-badge{font-family:'DM Mono',monospace;font-size:9px;padding:3px 8px;border-radius:3px;border:1px solid var(--b2);color:var(--t2);flex-shrink:0;margin-top:1px}
-.ch-badge.live{border-color:rgba(16,217,138,.3);color:var(--grn);background:var(--grn3)}
+.card-hdr{padding:16px 18px 12px;border-bottom:1px solid var(--b1);display:flex;justify-content:space-between;align-items:flex-start}
+.ch-label{font-family:'DM Mono',monospace;font-size:8px;letter-spacing:.16em;text-transform:uppercase;color:var(--ink3);margin-bottom:4px}
+.ch-title{font-family:'Playfair Display',serif;font-size:15px;font-weight:400;color:var(--ink);letter-spacing:-.1px}
+.badge{font-family:'DM Mono',monospace;font-size:8px;padding:3px 8px;border-radius:3px;background:var(--grn-d);border:1px solid rgba(45,212,160,.2);color:var(--grn);letter-spacing:.08em;flex-shrink:0}
 
-/* ── TREND CHART ── */
-.chart-area{padding:12px 14px 10px}
-.chart-legend{display:flex;gap:14px;margin-bottom:10px;flex-wrap:wrap}
-.cl-item{display:flex;align-items:center;gap:5px;font-family:'DM Mono',monospace;font-size:10px;color:var(--t2)}
-.cl-dot{width:8px;height:2px;border-radius:1px;flex-shrink:0}
-.chart-svg-wrap{background:rgba(255,255,255,.01);border:1px solid var(--b1);border-radius:6px;padding:10px;height:200px;overflow:hidden}
-.chart-svg-wrap svg{width:100%;height:100%}
+/* ── CHART ── */
+.chart-area{padding:14px 16px 12px}
+.legend{display:flex;gap:16px;margin-bottom:10px;flex-wrap:wrap}
+.leg-item{display:flex;align-items:center;gap:6px;font-family:'DM Mono',monospace;font-size:9px;color:var(--ink2)}
+.leg-line{width:12px;height:2px;border-radius:1px;flex-shrink:0}
+.chart-box{background:rgba(255,255,255,.015);border:1px solid var(--b1);border-radius:6px;padding:10px;height:196px;overflow:hidden}
+.chart-box svg{width:100%;height:100%}
 
-/* ── DISTRIBUTION GRID ── */
-.dist-grid{display:grid;grid-template-columns:1.1fr 1fr;grid-template-rows:100px 100px;gap:8px;padding:12px}
-.dist-card{border-radius:7px;padding:12px;border:1px solid rgba(255,255,255,.04);display:flex;flex-direction:column;justify-content:space-between;overflow:hidden}
-.dist-card.span2{grid-row:span 2}
-.dc-tag{font-family:'DM Mono',monospace;font-size:8px;letter-spacing:.15em;text-transform:uppercase;color:var(--t3)}
-.dc-val{font-family:'Syne',sans-serif;font-size:clamp(24px,3vw,38px);font-weight:800;color:var(--txt);line-height:1}
-.dc-sub{font-family:'DM Mono',monospace;font-size:9px;color:var(--t3);line-height:1.4}
-.dc-gold{background:radial-gradient(circle at 0% 0%,rgba(245,166,35,.12),transparent 50%),var(--s2)}
-.dc-grn{background:radial-gradient(circle at 0% 0%,rgba(16,217,138,.1),transparent 50%),var(--s2)}
-.dc-slt{background:radial-gradient(circle at 0% 0%,rgba(124,143,168,.08),transparent 50%),var(--s2)}
-.dc-red{background:radial-gradient(circle at 0% 0%,rgba(255,82,82,.1),transparent 50%),var(--s2)}
+/* ── DIST GRID ── */
+.dist-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;padding:12px}
+.dc{border-radius:8px;padding:14px;border:1px solid rgba(255,255,255,.04);display:flex;flex-direction:column;justify-content:space-between;min-height:96px}
+.dc-tag{font-family:'DM Mono',monospace;font-size:8px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink3);margin-bottom:6px}
+.dc-val{font-family:'Playfair Display',serif;font-size:clamp(26px,3vw,36px);font-weight:600;line-height:1;color:var(--ink);margin-bottom:4px}
+.dc-sub{font-family:'DM Mono',monospace;font-size:9px;color:var(--ink3)}
+.dc-amb{background:linear-gradient(135deg,rgba(232,160,48,.08),var(--s2))}
+.dc-grn{background:linear-gradient(135deg,rgba(45,212,160,.07),var(--s2))}
+.dc-slt{background:linear-gradient(135deg,rgba(107,127,150,.06),var(--s2))}
+.dc-red{background:linear-gradient(135deg,rgba(224,82,82,.08),var(--s2))}
 
 /* ── INSIGHTS ── */
-.insights-body{padding:8px 12px 12px}
-.insight-item{padding:10px 12px;border-radius:6px;border:1px solid var(--b1);border-left:2px solid var(--accent);margin-bottom:7px;font-size:12px;color:var(--t2);line-height:1.5}
-.insight-item:last-child{margin-bottom:0}
-.insight-label{font-family:'DM Mono',monospace;font-size:8px;letter-spacing:.12em;text-transform:uppercase;color:var(--accent);margin-bottom:3px}
-
-/* ── COMPARE CARDS ── */
-.compare-wrap{display:grid;grid-template-columns:1fr 1fr;gap:8px;padding:12px}
-.cmp-card{padding:14px;border-radius:7px;border:1px solid rgba(255,255,255,.04)}
-.cmp-label{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:var(--t3);margin-bottom:6px}
-.cmp-val{font-family:'Syne',sans-serif;font-size:clamp(20px,2vw,28px);font-weight:800;letter-spacing:-.3px;margin-bottom:3px}
-.cmp-sub{font-family:'DM Mono',monospace;font-size:9px;color:var(--t3)}
-.cmp-apto{background:linear-gradient(135deg,rgba(77,159,255,.07),var(--s2))}
-.cmp-casa{background:linear-gradient(135deg,rgba(245,166,35,.07),var(--s2))}
+.insights-body{padding:10px 14px 14px}
+.ins-item{padding:10px 12px;border-radius:7px;border:1px solid var(--b1);border-left:2px solid var(--c,var(--slt));margin-bottom:8px;background:rgba(255,255,255,.01)}
+.ins-item:last-child{margin-bottom:0}
+.ins-tag{font-family:'DM Mono',monospace;font-size:8px;letter-spacing:.12em;text-transform:uppercase;color:var(--c,var(--slt));margin-bottom:3px}
+.ins-text{font-size:11px;color:var(--ink2);line-height:1.5}
 
 /* ── TABLES ── */
 .tbl-wrap{overflow-x:auto}
 table{width:100%;border-collapse:collapse}
-th{padding:8px 12px;text-align:left;font-family:'DM Mono',monospace;font-size:8px;letter-spacing:.14em;text-transform:uppercase;color:var(--t3);font-weight:400;border-bottom:1px solid var(--b1);white-space:nowrap}
-td{padding:9px 12px;border-bottom:1px solid rgba(255,255,255,.03);font-size:11px;color:var(--t2);vertical-align:middle}
+th{padding:9px 14px;text-align:left;font-family:'DM Mono',monospace;font-size:8px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink3);font-weight:400;border-bottom:1px solid var(--b1);white-space:nowrap}
+td{padding:10px 14px;border-bottom:1px solid rgba(255,255,255,.03);font-size:12px;color:var(--ink2);vertical-align:middle}
 tr:last-child td{border-bottom:none}
 tr:hover td{background:rgba(255,255,255,.015)}
-.td-main{font-size:12px;font-weight:500;color:var(--txt)}
-.td-sub{font-family:'DM Mono',monospace;font-size:9px;color:var(--t3);margin-top:1px}
-.tag-tipo{display:inline-block;font-family:'DM Mono',monospace;font-size:8px;color:var(--t3);background:rgba(255,255,255,.04);padding:2px 5px;border-radius:3px;border:1px solid var(--b1)}
+.td-name{font-size:13px;font-weight:500;color:var(--ink)}
+.td-sub{font-family:'DM Mono',monospace;font-size:9px;color:var(--ink3);margin-top:1px}
+.tag-t{display:inline-block;font-family:'DM Mono',monospace;font-size:8px;padding:2px 6px;border-radius:3px;border:1px solid var(--b1);color:var(--ink3)}
 .mono{font-family:'DM Mono',monospace}
-.mono-lg{font-family:'DM Mono',monospace;font-size:12px;font-weight:500;color:var(--txt)}
-.bar-col{width:80px}
-.mini-bar{width:80px;height:2px;background:rgba(255,255,255,.06);border-radius:1px;display:inline-block}
-.mini-bar-fill{height:100%;border-radius:1px;background:linear-gradient(90deg,var(--blu),var(--grn))}
-.cbadge{font-family:'DM Mono',monospace;font-size:8px;padding:2px 6px;border-radius:3px;border:1px solid;font-weight:600;white-space:nowrap}
-.tag-diff{display:inline-block;font-family:'DM Mono',monospace;font-size:10px;font-weight:600;padding:2px 7px;border-radius:3px}
+.mono-v{font-family:'DM Mono',monospace;font-size:12px;font-weight:500;color:var(--ink)}
+.mini-bar{width:70px;height:2px;background:rgba(255,255,255,.07);border-radius:1px;display:inline-block}
+.mini-bar-f{height:100%;border-radius:1px;background:linear-gradient(90deg,var(--blu),var(--grn))}
+.cbadge{font-family:'DM Mono',monospace;font-size:8px;padding:2px 7px;border-radius:3px;border:1px solid;font-weight:500;white-space:nowrap}
+.diff-tag{font-family:'DM Mono',monospace;font-size:10px;font-weight:600;padding:2px 7px;border-radius:3px;display:inline-block}
+.empty-row td{color:var(--ink3);font-family:'DM Mono',monospace;font-size:10px;padding:24px 14px}
 
-/* ── HEALTH ITEMS ── */
-.health-body{padding:10px 12px 12px}
-.health-item{display:flex;justify-content:space-between;align-items:center;padding:9px 10px;border-radius:5px;border:1px solid var(--b1);border-left:2px solid var(--accent);margin-bottom:6px;background:rgba(255,255,255,.01)}
-.health-item:last-child{margin-bottom:0}
-.health-label{font-size:11px;color:var(--t2)}
-.health-val{font-family:'DM Mono',monospace;font-size:11px;font-weight:500;color:var(--txt)}
+/* ── HEALTH ── */
+.health-body{padding:10px 14px 14px}
+.h-item{display:flex;justify-content:space-between;align-items:center;padding:9px 12px;border-radius:6px;border:1px solid var(--b1);border-left:2px solid var(--c,var(--slt));margin-bottom:7px;background:rgba(255,255,255,.01)}
+.h-item:last-child{margin-bottom:0}
+.h-label{font-size:11px;color:var(--ink2)}
+.h-val{font-family:'DM Mono',monospace;font-size:11px;font-weight:500;color:var(--ink)}
 
-/* ── SNAPSHOT TABLE ROW STATUS ── */
-.snap-trend-up{color:var(--grn)}
-.snap-trend-dn{color:var(--red)}
-.snap-trend-nu{color:var(--t3)}
-
-/* ── EMPTY STATE ── */
-.empty{padding:24px;text-align:center;font-family:'DM Mono',monospace;font-size:10px;color:var(--t3)}
+/* ── COMPARE INLINE ── */
+.cmp-inline{display:flex;gap:8px;align-items:center}
+.cmp-pill{padding:6px 12px;border-radius:6px;border:1px solid var(--b1);font-family:'DM Mono',monospace}
+.cmp-pill-label{font-size:8px;color:var(--ink3);text-transform:uppercase;letter-spacing:.1em;margin-bottom:2px}
+.cmp-pill-val{font-family:'Playfair Display',serif;font-size:15px;font-weight:600}
 
 /* ── RESPONSIVE ── */
 @media(max-width:1200px){
-  .kpi-row{grid-template-columns:repeat(3,1fr)}
-  .status-row{grid-template-columns:repeat(2,1fr)}
-  .g3,.g2,.g2b{grid-template-columns:1fr}
-  .dist-grid{grid-template-columns:1fr 1fr;grid-template-rows:auto}
-  .dist-card.span2{grid-row:auto}
+  .kpi-strip{grid-template-columns:repeat(3,1fr)}
+  .status-strip{grid-template-columns:repeat(2,1fr)}
+  .g3,.g2{grid-template-columns:1fr}
 }
-@media(max-width:640px){
+@media(max-width:700px){
   .wrap{padding:14px 12px 60px}
-  .kpi-row{grid-template-columns:repeat(2,1fr)}
-  .topbar{flex-direction:column;gap:12px;align-items:flex-start}
-  .topbar-center{display:none}
+  .kpi-strip{grid-template-columns:repeat(2,1fr)}
+  header{flex-direction:column;gap:14px;align-items:flex-start}
+  .h-center{display:none}
 }
 </style>
 </head>
 <body>
 <div class="wrap">
 
-  <!-- TOPBAR -->
-  <header class="topbar">
-    <div class="brand">
-      <div class="brand-mark">
-        <svg viewBox="0 0 16 16"><polyline points="2,12 6,7 9,10 14,4"/></svg>
-      </div>
-      <div class="brand-text">
-        <div class="brand-name">Valorius</div>
-        <div class="brand-sub">Market Intelligence</div>
-      </div>
+<!-- HEADER -->
+<header>
+  <div class="h-brand">
+    <div class="h-logo">
+      <svg viewBox="0 0 18 18"><polyline points="2,14 6,8 10,11 16,3"/></svg>
     </div>
-    <div class="topbar-center">
-      <div class="topbar-title">Dashboard Operativo</div>
-      <div class="topbar-sub" id="snapDate">Tegucigalpa · Honduras · Cargando...</div>
-    </div>
-    <div class="topbar-right">
-      <div class="live-chip"><span class="live-dot"></span>LIVE</div>
-      <button class="btn" onclick="location.reload()">Actualizar</button>
-    </div>
-  </header>
-
-  <div id="err"></div>
-
-  <!-- ── KPIs PRINCIPALES ── -->
-  <div class="sec-hdr"><span class="sec-hdr-label">Métricas globales</span></div>
-  <div class="kpi-row">
-    <div class="kpi" style="--accent:var(--grn)">
-      <div class="kpi-label">Mediana USD/m²</div>
-      <div class="kpi-val accent" id="medianPrice">—</div>
-      <div class="kpi-meta">Zonas con ≥3 muestras</div>
-    </div>
-    <div class="kpi" style="--accent:var(--blu)">
-      <div class="kpi-label">Inventario</div>
-      <div class="kpi-val" id="inventoryCount">—</div>
-      <div class="kpi-meta">Propiedades activas</div>
-    </div>
-    <div class="kpi" style="--accent:var(--slt)">
-      <div class="kpi-label">Listings</div>
-      <div class="kpi-val" id="listingCount">—</div>
-      <div class="kpi-meta">Avisos con precio</div>
-    </div>
-    <div class="kpi" style="--accent:var(--amb)">
-      <div class="kpi-label">Zonas</div>
-      <div class="kpi-val" id="zoneCount">—</div>
-      <div class="kpi-meta" id="snapshotMeta">— snapshots</div>
-    </div>
-    <div class="kpi" style="--accent:var(--grn)">
-      <div class="kpi-label">Cobertura benchmark</div>
-      <div class="kpi-val accent" id="coberturaVal">—</div>
-      <div class="kpi-meta">Zonas con ≥3 muestras</div>
+    <div>
+      <div class="h-name">Valorius</div>
+      <div class="h-sub">Market Intelligence · Tegucigalpa</div>
     </div>
   </div>
-
-  <!-- ── MARKET STATUS ── -->
-  <div class="status-row">
-    <div class="status-card" style="--accent:var(--amb)">
-      <div class="status-num" id="gangasCount">—</div>
-      <div class="status-info">
-        <div class="sl">Gangas detectadas</div>
-        <div class="sv">Spread &gt;25% bajo benchmark</div>
-      </div>
-    </div>
-    <div class="status-card" style="--accent:var(--grn)">
-      <div class="status-num" id="opCount">—</div>
-      <div class="status-info">
-        <div class="sl">Oportunidades</div>
-        <div class="sv">Entre 10–25% bajo benchmark</div>
-      </div>
-    </div>
-    <div class="status-card" style="--accent:var(--slt)">
-      <div class="status-num" id="merCount">—</div>
-      <div class="status-info">
-        <div class="sl">Precio de mercado</div>
-        <div class="sv">Alineadas al benchmark ±10%</div>
-      </div>
-    </div>
-    <div class="status-card" style="--accent:var(--red)">
-      <div class="status-num" id="sobCount">—</div>
-      <div class="status-info">
-        <div class="sl">Sobrevaloradas</div>
-        <div class="sv">Más de 20% sobre benchmark</div>
-      </div>
-    </div>
+  <div class="h-center">
+    <div class="h-title">Dashboard Operativo</div>
+    <div class="h-date" id="hDate">Cargando...</div>
   </div>
-
-  <!-- ── FILA 1: TENDENCIA + DISTRIBUCIÓN + INSIGHTS ── -->
-  <div class="sec-hdr"><span class="sec-hdr-label">Inteligencia de mercado</span></div>
-  <div class="g3">
-
-    <!-- TENDENCIA -->
-    <div class="card">
-      <div class="card-hdr">
-        <div class="card-hdr-left">
-          <div class="ch-label">Series temporales</div>
-          <div class="ch-title">Evolución USD/m² · Apartamentos</div>
-        </div>
-        <span class="ch-badge live">LIVE</span>
-      </div>
-      <div class="chart-area">
-        <div class="chart-legend" id="chartLegend"></div>
-        <div class="chart-svg-wrap">
-          <svg id="trendSVG" viewBox="0 0 600 170" preserveAspectRatio="none"></svg>
-        </div>
-      </div>
-    </div>
-
-    <!-- DISTRIBUCIÓN -->
-    <div class="card">
-      <div class="card-hdr">
-        <div class="card-hdr-left">
-          <div class="ch-label">Clasificación</div>
-          <div class="ch-title">Distribución del mercado</div>
-        </div>
-      </div>
-      <div class="dist-grid" id="distGrid"></div>
-    </div>
-
-    <!-- INSIGHTS -->
-    <div class="card">
-      <div class="card-hdr">
-        <div class="card-hdr-left">
-          <div class="ch-label">Análisis operativo</div>
-          <div class="ch-title">Insights clave</div>
-        </div>
-      </div>
-      <div class="insights-body" id="insights"></div>
-    </div>
-
+  <div class="h-right">
+    <div class="chip"><span class="dot"></span>LIVE</div>
+    <button class="btn" onclick="location.reload()">Actualizar</button>
   </div>
+</header>
 
-  <!-- ── FILA 2: BENCHMARK DETALLADO ── -->
-  <div class="sec-hdr"><span class="sec-hdr-label">Benchmarks por zona · Confidence Engine</span></div>
-  <div class="card gfull">
-    <div class="card-hdr">
-      <div class="card-hdr-left">
-        <div class="ch-label">Precios de referencia</div>
-        <div class="ch-title">Mediana USD/m² por zona y tipo · Solo zonas con ≥3 muestras</div>
-      </div>
-      <div class="compare-wrap" style="padding:0;display:inline-flex;gap:8px;align-items:center">
-        <div class="cmp-card cmp-apto" style="padding:8px 12px;min-width:120px">
-          <div class="cmp-label">Aptos</div>
-          <div class="cmp-val" style="color:var(--blu);font-size:16px" id="aptAvg">—</div>
-        </div>
-        <div class="cmp-card cmp-casa" style="padding:8px 12px;min-width:120px">
-          <div class="cmp-label">Casas</div>
-          <div class="cmp-val" style="color:var(--amb);font-size:16px" id="casaAvg">—</div>
-        </div>
-      </div>
-    </div>
-    <div class="tbl-wrap">
-      <table>
-        <thead>
-          <tr>
-            <th>Zona</th>
-            <th>Spread</th>
-            <th>Mediana USD/m²</th>
-            <th>IQR (p25 – p75)</th>
-            <th>CV%</th>
-            <th>Muestras</th>
-            <th>Confianza</th>
-          </tr>
-        </thead>
-        <tbody id="benchTbl"><tr><td colspan="7" class="empty">Cargando...</td></tr></tbody>
-      </table>
-    </div>
+<!-- KPI STRIP -->
+<div class="sec">Métricas globales</div>
+<div class="kpi-strip">
+  <div class="kpi k-grn">
+    <div class="kpi-label">Mediana USD/m²</div>
+    <div class="kpi-val" id="kMed">—</div>
+    <div class="kpi-sub">Zonas con ≥3 muestras</div>
   </div>
-
-  <!-- ── FILA 3: FEED OPORTUNIDADES + SALUD ── -->
-  <div class="sec-hdr"><span class="sec-hdr-label">Radar de oportunidades · Monitoreo de datos</span></div>
-  <div class="g2">
-
-    <!-- FEED -->
-    <div class="card">
-      <div class="card-hdr">
-        <div class="card-hdr-left">
-          <div class="ch-label">v_deals · Motor analítico</div>
-          <div class="ch-title">Feed de oportunidades</div>
-        </div>
-        <span class="ch-badge live">LIVE</span>
-      </div>
-      <div class="tbl-wrap">
-        <table>
-          <thead>
-            <tr>
-              <th>Nota del analista</th>
-              <th>Estatus</th>
-              <th>USD/m²</th>
-              <th>vs Benchmark</th>
-              <th>Validación estadística</th>
-            </tr>
-          </thead>
-          <tbody id="feedTbl"><tr><td colspan="5" class="empty">Cargando...</td></tr></tbody>
-        </table>
-      </div>
-    </div>
-
-    <!-- SALUD -->
-    <div class="card">
-      <div class="card-hdr">
-        <div class="card-hdr-left">
-          <div class="ch-label">Monitoreo interno</div>
-          <div class="ch-title">Salud de datos</div>
-        </div>
-      </div>
-      <div class="health-body">
-        <div class="health-item" style="--accent:var(--red)"><span class="health-label">Listings sin área m²</span><strong class="health-val" id="h1">—</strong></div>
-        <div class="health-item" style="--accent:var(--grn)"><span class="health-label">Duplicados detectados</span><strong class="health-val" id="h2">—</strong></div>
-        <div class="health-item" style="--accent:var(--slt)"><span class="health-label">Zonas sin benchmark</span><strong class="health-val" id="h3">—</strong></div>
-        <div class="health-item" style="--accent:var(--amb)"><span class="health-label">Cobertura benchmark</span><strong class="health-val" id="h4">—</strong></div>
-        <div class="health-item" style="--accent:var(--blu)"><span class="health-label">Último snapshot</span><strong class="health-val" id="h5">—</strong></div>
-        <div class="health-item" style="--accent:var(--grn)"><span class="health-label">Scraper · fuente principal</span><strong class="health-val" id="h6">—</strong></div>
-      </div>
-    </div>
+  <div class="kpi k-blu">
+    <div class="kpi-label">Inventario</div>
+    <div class="kpi-val" id="kInv">—</div>
+    <div class="kpi-sub">Propiedades activas</div>
   </div>
-
-  <!-- ── FILA 4: SNAPSHOTS HISTÓRICOS ── -->
-  <div class="sec-hdr"><span class="sec-hdr-label">Series temporales históricas · Activo diferenciador de Valorius</span></div>
-  <div class="card gfull">
-    <div class="card-hdr">
-      <div class="card-hdr-left">
-        <div class="ch-label">Historial de mercado</div>
-        <div class="ch-title">Snapshots por zona · Cada fila es una foto inmutable del mercado</div>
-      </div>
-      <span class="ch-badge" id="snapCount">— snapshots</span>
-    </div>
-    <div class="tbl-wrap">
-      <table>
-        <thead>
-          <tr>
-            <th>Fecha</th>
-            <th>Zona</th>
-            <th>Tipo</th>
-            <th>Mediana USD/m²</th>
-            <th>IQR (p25 – p75)</th>
-            <th>CV%</th>
-            <th>Muestras</th>
-            <th>Confianza</th>
-          </tr>
-        </thead>
-        <tbody id="snapTbl"><tr><td colspan="8" class="empty">Cargando...</td></tr></tbody>
-      </table>
-    </div>
+  <div class="kpi">
+    <div class="kpi-label">Listings</div>
+    <div class="kpi-val" id="kList">—</div>
+    <div class="kpi-sub">Avisos con precio</div>
   </div>
-
+  <div class="kpi k-amb">
+    <div class="kpi-label">Zonas</div>
+    <div class="kpi-val" id="kZones">—</div>
+    <div class="kpi-sub" id="kSnaps">— snapshots</div>
+  </div>
+  <div class="kpi k-grn">
+    <div class="kpi-label">Cobertura benchmark</div>
+    <div class="kpi-val" id="kCov">—</div>
+    <div class="kpi-sub">Zonas con benchmark válido</div>
+  </div>
 </div>
+
+<!-- STATUS STRIP -->
+<div class="status-strip">
+  <div class="sc" style="--c:var(--amb)">
+    <div class="sc-num" id="sGangas">—</div>
+    <div><div class="sc-label">Gangas</div><div class="sc-desc">Spread &gt;25% bajo benchmark</div></div>
+  </div>
+  <div class="sc" style="--c:var(--grn)">
+    <div class="sc-num" id="sOp">—</div>
+    <div><div class="sc-label">Oportunidades</div><div class="sc-desc">Entre 10–25% bajo benchmark</div></div>
+  </div>
+  <div class="sc" style="--c:var(--slt)">
+    <div class="sc-num" id="sMer">—</div>
+    <div><div class="sc-label">Precio de mercado</div><div class="sc-desc">Alineadas al benchmark ±10%</div></div>
+  </div>
+  <div class="sc" style="--c:var(--red)">
+    <div class="sc-num" id="sSob">—</div>
+    <div><div class="sc-label">Sobrevaloradas</div><div class="sc-desc">Más de 20% sobre benchmark</div></div>
+  </div>
+</div>
+
+<!-- FILA 1: TENDENCIA + DISTRIBUCIÓN + INSIGHTS -->
+<div class="sec">Inteligencia de mercado</div>
+<div class="g3">
+  <!-- TENDENCIA -->
+  <div class="card">
+    <div class="card-hdr">
+      <div><div class="ch-label">Series temporales</div><div class="ch-title">Evolución USD/m² · Apartamentos</div></div>
+      <span class="badge">LIVE</span>
+    </div>
+    <div class="chart-area">
+      <div class="legend" id="chartLegend"></div>
+      <div class="chart-box"><svg id="trendSVG" viewBox="0 0 560 166" preserveAspectRatio="none"></svg></div>
+    </div>
+  </div>
+  <!-- DISTRIBUCIÓN -->
+  <div class="card">
+    <div class="card-hdr">
+      <div><div class="ch-label">Clasificación del mercado</div><div class="ch-title">Distribución actual</div></div>
+    </div>
+    <div class="dist-grid" id="distGrid"></div>
+  </div>
+  <!-- INSIGHTS -->
+  <div class="card">
+    <div class="card-hdr">
+      <div><div class="ch-label">Análisis operativo</div><div class="ch-title">Insights clave</div></div>
+    </div>
+    <div class="insights-body" id="insights"></div>
+  </div>
+</div>
+
+<!-- FILA 2: BENCHMARK DETALLADO -->
+<div class="sec">Benchmarks por zona · Confidence Engine</div>
+<div class="card gfull">
+  <div class="card-hdr">
+    <div><div class="ch-label">Precios de referencia · Solo zonas con ≥3 muestras</div><div class="ch-title">Mediana USD/m² por zona y tipo de inmueble</div></div>
+    <div class="cmp-inline">
+      <div class="cmp-pill">
+        <div class="cmp-pill-label">Aptos</div>
+        <div class="cmp-pill-val" style="color:var(--blu)" id="aptAvg">—</div>
+      </div>
+      <div class="cmp-pill">
+        <div class="cmp-pill-label">Casas</div>
+        <div class="cmp-pill-val" style="color:var(--amb)" id="casaAvg">—</div>
+      </div>
+    </div>
+  </div>
+  <div class="tbl-wrap">
+    <table>
+      <thead><tr><th>Zona</th><th>Spread</th><th>Mediana USD/m²</th><th>IQR p25–p75</th><th>CV%</th><th>Muestras</th><th>Confianza</th></tr></thead>
+      <tbody id="benchTbl"><tr class="empty-row"><td colspan="7">Cargando benchmarks...</td></tr></tbody>
+    </table>
+  </div>
+</div>
+
+<!-- FILA 3: FEED + SALUD -->
+<div class="sec">Radar de oportunidades · Salud del sistema</div>
+<div class="g2">
+  <div class="card">
+    <div class="card-hdr">
+      <div><div class="ch-label">Motor analítico · v_deals</div><div class="ch-title">Feed de oportunidades</div></div>
+      <span class="badge">LIVE</span>
+    </div>
+    <div class="tbl-wrap">
+      <table>
+        <thead><tr><th>Nota del analista</th><th>Estatus</th><th>USD/m²</th><th>vs Benchmark</th><th>Validación</th></tr></thead>
+        <tbody id="feedTbl"><tr class="empty-row"><td colspan="5">Cargando...</td></tr></tbody>
+      </table>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-hdr">
+      <div><div class="ch-label">Monitoreo interno</div><div class="ch-title">Salud de datos</div></div>
+    </div>
+    <div class="health-body">
+      <div class="h-item" style="--c:var(--red)"><span class="h-label">Listings sin área m²</span><strong class="h-val" id="h1">—</strong></div>
+      <div class="h-item" style="--c:var(--grn)"><span class="h-label">Duplicados detectados</span><strong class="h-val" id="h2">—</strong></div>
+      <div class="h-item" style="--c:var(--slt)"><span class="h-label">Zonas sin benchmark</span><strong class="h-val" id="h3">—</strong></div>
+      <div class="h-item" style="--c:var(--amb)"><span class="h-label">Cobertura benchmark</span><strong class="h-val" id="h4">—</strong></div>
+      <div class="h-item" style="--c:var(--blu)"><span class="h-label">Último snapshot</span><strong class="h-val" id="h5">—</strong></div>
+      <div class="h-item" style="--c:var(--grn)"><span class="h-label">Origen de datos</span><strong class="h-val" id="h6">—</strong></div>
+    </div>
+  </div>
+</div>
+
+<!-- FILA 4: SNAPSHOTS HISTÓRICOS -->
+<div class="sec">Historial de mercado · Activo diferenciador de Valorius</div>
+<div class="card gfull">
+  <div class="card-hdr">
+    <div><div class="ch-label">Series temporales inmutables</div><div class="ch-title">Snapshots históricos por zona</div></div>
+    <span class="badge" id="snapCount">— snapshots</span>
+  </div>
+  <div class="tbl-wrap">
+    <table>
+      <thead><tr><th>Fecha</th><th>Zona</th><th>Tipo</th><th>Mediana USD/m²</th><th>IQR p25–p75</th><th>CV%</th><th>Muestras</th><th>Confianza</th></tr></thead>
+      <tbody id="snapTbl"><tr class="empty-row"><td colspan="8">Cargando snapshots...</td></tr></tbody>
+    </table>
+  </div>
+</div>
+
+</div><!-- /wrap -->
 
 <script>
 const SURL='https://oxhzxistgyfvkhzncxpz.supabase.co';
 const SKEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im94aHp4aXN0Z3lmdmtoem5jeHB6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc2NTE0NzIsImV4cCI6MjA5MzIyNzQ3Mn0.-Q8XybmgAQdiBA5tAFi9LLoFnLuF0nJlsCh8WlTUjis';
-const sb=supabase.createClient(SURL,SKEY).schema('core');
+const client=supabase.createClient(SURL,SKEY);
 
+// Queries directas con SQL — evita el problema del join anidado en REST
 const fmt=n=>Number(n||0).toLocaleString('en-US',{maximumFractionDigits:0});
-const fmtU=n=>'$'+fmt(n);
+const fU=n=>'$'+fmt(n);
 const setEl=(id,v)=>{const e=document.getElementById(id);if(e)e.textContent=v};
 
-function confScore(r){
-  const m=Number(r.cantidad_muestras||0),std=Number(r.desviacion_std||0),med=Number(r.precio_m2_mediana||1);
-  const p25=Number(r.p25||0),p75=Number(r.p75||0);
+function confScore(m,std,med,p25,p75){
+  m=Number(m||0);std=Number(std||0);med=Number(med||1);p25=Number(p25||0);p75=Number(p75||0);
   const mPts=Math.min(m/10*40,40);
   const cv=med>0?std/med:1,cvPts=Math.max(0,40-cv*100);
   const iqr=med>0?(p75-p25)/med:1,iqrPts=Math.max(0,20-iqr*40);
@@ -443,257 +345,275 @@ function confLabel(s){
   return{l:'BAJA',c:'var(--red)'};
 }
 
-const S={snaps:[],deals:[],listings:0,props:0,zones:0,snapCount:0,sinArea:0,scraperCount:0};
+// ── FETCH CON RPC / REST DIRECTO ──────────────
+async function fetchMetrics(){
+  // Usar endpoint de REST con joins explícitos correctos para Supabase
+  const headers={
+    'apikey':SKEY,'Authorization':'Bearer '+SKEY,
+    'Content-Type':'application/json','Accept-Profile':'core','Content-Profile':'core'
+  };
+
+  // Counts paralelos
+  const[propR,listR,zoneR,snapR]=await Promise.all([
+    fetch(SURL+'/rest/v1/property?select=property_id&schema=core',{headers}).then(r=>r.headers.get('content-range')),
+    fetch(SURL+'/rest/v1/listing?select=listing_id&schema=core',{headers}).then(r=>r.headers.get('content-range')),
+    fetch(SURL+'/rest/v1/dim_zone?select=zone_id&schema=core',{headers}).then(r=>r.headers.get('content-range')),
+    fetch(SURL+'/rest/v1/market_snapshot?select=snapshot_id&schema=core',{headers}).then(r=>r.headers.get('content-range')),
+  ]);
+  const parseCount=r=>{if(!r)return 0;const p=r.split('/');return parseInt(p[p.length-1])||0};
+
+  // Métricas con join manual
+  const [mmR,dealsR,sinAreaR,scraperR]=await Promise.all([
+    fetch(SURL+'/rest/v1/market_metrics?select=precio_m2_mediana,cantidad_muestras,p25,p75,desviacion_std,snapshot_id,market_snapshot!inner(fecha_snapshot,zone_id,property_type_id,dim_zone!inner(zona),dim_property_type!inner(tipo_inmueble))&order=created_at.desc&limit=80',{headers}).then(r=>r.json()),
+    fetch(SURL+'/rest/v1/v_deals?select=*&order=diferencia_vs_mercado.asc&limit=100',{headers}).then(r=>r.json()),
+    fetch(SURL+'/rest/v1/listing?select=listing_id&area_construccion=is.null&schema=core',{headers}).then(r=>r.headers.get('content-range')),
+    fetch(SURL+'/rest/v1/listing?select=listing_id&fuente=eq.Propiedades Honduras&schema=core',{headers}).then(r=>r.headers.get('content-range')),
+  ]);
+
+  return {
+    props:parseCount(propR),
+    listings:parseCount(listR),
+    zones:parseCount(zoneR),
+    snaps:parseCount(snapR),
+    metrics:Array.isArray(mmR)?mmR:[],
+    deals:Array.isArray(dealsR)?dealsR:[],
+    sinArea:parseCount(sinAreaR),
+    scraper:parseCount(scraperR)
+  };
+}
 
 async function init(){
   try{
-    const[
-      {count:props},{count:listings},{count:zones},{count:snaps},
-      {data:snapData},{data:dealsData},{count:sinArea},{count:scraperCount}
-    ]=await Promise.all([
-      sb.from('property').select('*',{count:'exact',head:true}),
-      sb.from('listing').select('*',{count:'exact',head:true}),
-      sb.from('dim_zone').select('*',{count:'exact',head:true}),
-      sb.from('market_snapshot').select('*',{count:'exact',head:true}),
-      sb.from('market_metrics').select(`precio_m2_mediana,cantidad_muestras,p25,p75,desviacion_std,created_at,market_snapshot!inner(fecha_snapshot,dim_zone!inner(zona),dim_property_type!inner(tipo_inmueble))`).order('created_at',{ascending:false}).limit(80),
-      sb.from('v_deals').select('*').order('diferencia_vs_mercado',{ascending:true}).limit(100),
-      sb.from('listing').select('*',{count:'exact',head:true}).is('area_construccion',null),
-      sb.from('listing').select('*',{count:'exact',head:true}).eq('fuente','Propiedades Honduras')
-    ]);
-    Object.assign(S,{props:props||0,listings:listings||0,zones:zones||0,snapCount:snaps||0,snaps:snapData||[],deals:dealsData||[],sinArea:sinArea||0,scraperCount:scraperCount||0});
+    setEl('hDate',new Date().toLocaleDateString('es-HN',{weekday:'long',day:'numeric',month:'long',year:'numeric'}));
+    const D=await fetchMetrics();
 
-    const meds=S.snaps.filter(s=>s.cantidad_muestras>=3).map(s=>Number(s.precio_m2_mediana)).sort((a,b)=>a-b);
+    // Mediana global de medianas con >=3 muestras
+    const meds=D.metrics.filter(m=>m.cantidad_muestras>=3).map(m=>Number(m.precio_m2_mediana)).sort((a,b)=>a-b);
     const medG=meds.length?meds[Math.floor(meds.length/2)]:0;
-    const zonasConB=new Set(S.snaps.filter(s=>s.cantidad_muestras>=3).map(s=>s.market_snapshot?.dim_zone?.zona)).size;
-    const cob=S.zones>0?((zonasConB/S.zones)*100).toFixed(0)+'%':'—';
 
-    setEl('medianPrice',fmtU(medG));
-    setEl('inventoryCount',fmt(S.props));
-    setEl('listingCount',fmt(S.listings));
-    setEl('zoneCount',fmt(S.zones));
-    setEl('snapshotMeta',fmt(S.snapCount)+' snapshots');
-    setEl('coberturaVal',cob);
-    setEl('snapDate','Tegucigalpa · Honduras · '+new Date().toLocaleDateString('es-HN',{day:'numeric',month:'long',year:'numeric'}));
-    setEl('snapCount',fmt(S.snapCount)+' snapshots');
+    // Zonas con benchmark
+    const zonasConB=new Set(D.metrics.filter(m=>m.cantidad_muestras>=3).map(m=>m.market_snapshot?.dim_zone?.zona).filter(Boolean)).size;
+    const cob=D.zones>0?Math.round(zonasConB/D.zones*100)+'%':'—';
 
-    const d=S.deals;
-    setEl('gangasCount',d.filter(x=>x.estatus_inversion?.includes('SUBVALUADO')).length);
-    setEl('opCount',d.filter(x=>x.estatus_inversion?.includes('OPORTUNIDAD')).length);
-    setEl('merCount',d.filter(x=>x.estatus_inversion?.includes('MERCADO')).length);
-    setEl('sobCount',d.filter(x=>x.estatus_inversion?.includes('SOBREVALORADA')).length);
+    // KPIs
+    setEl('kMed',fU(medG));
+    setEl('kInv',fmt(D.props));
+    setEl('kList',fmt(D.listings));
+    setEl('kZones',fmt(D.zones));
+    setEl('kSnaps',fmt(D.snaps)+' snapshots');
+    setEl('kCov',cob);
+    setEl('snapCount',fmt(D.snaps)+' snapshots');
 
-    renderDist();
-    renderTrend();
-    renderInsights();
-    renderBench();
-    renderFeed();
-    renderHealth(zonasConB,cob);
-    renderSnaps();
+    // Status
+    const dd=D.deals;
+    setEl('sGangas',dd.filter(x=>x.estatus_inversion?.includes('SUBVALUADO')).length);
+    setEl('sOp',dd.filter(x=>x.estatus_inversion?.includes('OPORTUNIDAD')).length);
+    setEl('sMer',dd.filter(x=>x.estatus_inversion?.includes('MERCADO')).length);
+    setEl('sSob',dd.filter(x=>x.estatus_inversion?.includes('SOBREVALORADA')).length);
+
+    renderDist(D.deals);
+    renderTrend(D.metrics);
+    renderInsights(D.deals,D.metrics);
+    renderBench(D.metrics);
+    renderFeed(D.deals);
+    renderHealth(D,zonasConB,cob);
+    renderSnaps(D.metrics,D.snaps);
+
   }catch(e){
-    const el=document.getElementById('err');
-    if(el){el.textContent='Error: '+e.message;el.style.display='block';}
     console.error(e);
+    document.querySelector('header').insertAdjacentHTML('afterend',
+      `<div style="padding:12px 16px;background:rgba(224,82,82,.08);border:1px solid rgba(224,82,82,.2);border-radius:8px;font-family:DM Mono,monospace;font-size:10px;color:#e05252;margin-bottom:16px">Error: ${e.message}</div>`
+    );
   }
 }
 
-function renderDist(){
-  const d=S.deals,total=d.length||1;
-  const sub=d.filter(x=>x.estatus_inversion?.includes('SUBVALUADO')).length;
-  const opp=d.filter(x=>x.estatus_inversion?.includes('OPORTUNIDAD')).length;
-  const mer=d.filter(x=>x.estatus_inversion?.includes('MERCADO')).length;
-  const sob=d.filter(x=>x.estatus_inversion?.includes('SOBREVALORADA')).length;
-  const el=document.getElementById('distGrid');
-  if(!el)return;
+function renderDist(deals){
+  const el=document.getElementById('distGrid');if(!el)return;
+  const t=deals.length||1;
+  const sub=deals.filter(x=>x.estatus_inversion?.includes('SUBVALUADO')).length;
+  const opp=deals.filter(x=>x.estatus_inversion?.includes('OPORTUNIDAD')).length;
+  const mer=deals.filter(x=>x.estatus_inversion?.includes('MERCADO')).length;
+  const sob=deals.filter(x=>x.estatus_inversion?.includes('SOBREVALORADA')).length;
   el.innerHTML=`
-    <div class="dist-card dc-gold span2">
-      <div><div class="dc-tag">Gangas · Subvaluado</div><div class="dc-val">${sub}</div></div>
-      <div class="dc-sub">${((sub/total)*100).toFixed(1)}% del inventario<br>Spread &gt;25% bajo benchmark</div>
-    </div>
-    <div class="dist-card dc-grn">
-      <div class="dc-tag">Oportunidades</div>
-      <div class="dc-val">${opp}</div>
-      <div class="dc-sub">${((opp/total)*100).toFixed(1)}%</div>
-    </div>
-    <div class="dist-card dc-slt">
-      <div class="dc-tag">Precio justo</div>
-      <div class="dc-val">${mer}</div>
-      <div class="dc-sub">${((mer/total)*100).toFixed(1)}%</div>
-    </div>
-    <div class="dist-card dc-red">
-      <div class="dc-tag">Sobrevaloradas</div>
-      <div class="dc-val">${sob}</div>
-      <div class="dc-sub">${((sob/total)*100).toFixed(1)}%</div>
-    </div>`;
+    <div class="dc dc-amb"><div class="dc-tag">Gangas</div><div class="dc-val">${sub}</div><div class="dc-sub">${((sub/t)*100).toFixed(1)}% · spread &gt;25%</div></div>
+    <div class="dc dc-grn"><div class="dc-tag">Oportunidades</div><div class="dc-val">${opp}</div><div class="dc-sub">${((opp/t)*100).toFixed(1)}%</div></div>
+    <div class="dc dc-slt"><div class="dc-tag">Precio justo</div><div class="dc-val">${mer}</div><div class="dc-sub">${((mer/t)*100).toFixed(1)}%</div></div>
+    <div class="dc dc-red"><div class="dc-tag">Sobrevaloradas</div><div class="dc-val">${sob}</div><div class="dc-sub">${((sob/t)*100).toFixed(1)}%</div></div>`;
 }
 
-function renderTrend(){
+function renderTrend(metrics){
+  // Construir series por zona, solo APARTAMENTO
   const series={},fechas=new Set();
-  S.snaps.forEach(s=>{
-    const zona=s.market_snapshot?.dim_zone?.zona||'';
-    const tipo=s.market_snapshot?.dim_property_type?.tipo_inmueble||'';
-    const fecha=s.market_snapshot?.fecha_snapshot||'';
-    const med=Number(s.precio_m2_mediana||0);
+  metrics.forEach(m=>{
+    const zona=m.market_snapshot?.dim_zone?.zona;
+    const tipo=m.market_snapshot?.dim_property_type?.tipo_inmueble;
+    const fecha=m.market_snapshot?.fecha_snapshot;
     if(!zona||!fecha||tipo!=='APARTAMENTO')return;
     if(!series[zona])series[zona]={};
-    series[zona][fecha]=med;fechas.add(fecha);
+    series[zona][fecha]=Number(m.precio_m2_mediana);
+    fechas.add(fecha);
   });
   const fa=[...fechas].sort();
   const topZ=Object.entries(series).sort((a,b)=>Object.keys(b[1]).length-Object.keys(a[1]).length).slice(0,4).map(([z])=>z);
-  const colors=['#10d98a','#f5a623','#7c8fa8','#4d9fff'];
+  const colors=['#2dd4a0','#e8a030','#6b7f96','#5b9cf6'];
 
+  // Leyenda
   const leg=document.getElementById('chartLegend');
-  if(leg) leg.innerHTML=topZ.map((z,i)=>`<div class="cl-item"><div class="cl-dot" style="background:${colors[i]}"></div>${z}</div>`).join('');
+  if(leg)leg.innerHTML=topZ.map((z,i)=>`<div class="leg-item"><div class="leg-line" style="background:${colors[i]}"></div>${z}</div>`).join('');
 
   const svg=document.getElementById('trendSVG');
-  if(!svg||!fa.length)return;
-  const W=600,H=170,PAD=32;
+  if(!svg)return;
+
+  if(!fa.length||!topZ.length){
+    svg.innerHTML=`<text x="280" y="83" text-anchor="middle" fill="rgba(255,255,255,.15)" font-size="11" font-family="DM Mono">Sin datos de series temporales</text>`;
+    return;
+  }
+
+  const W=560,H=166,PX=38,PY=14;
   let allV=[];
   topZ.forEach(z=>fa.forEach(f=>{if(series[z]?.[f])allV.push(series[z][f]);}));
   if(!allV.length)return;
-  const minV=Math.min(...allV)*.92,maxV=Math.max(...allV)*1.05;
-  const xS=i=>PAD+(i/Math.max(fa.length-1,1))*(W-PAD*2);
-  const yS=v=>H-PAD-((v-minV)/(maxV-minV))*(H-PAD*2);
+  const minV=Math.min(...allV)*.92,maxV=Math.max(...allV)*1.04;
+  const xS=i=>PX+(i/Math.max(fa.length-1,1))*(W-PX*2);
+  const yS=v=>PY+(1-(v-minV)/(maxV-minV))*(H-PY*2);
+
   let html='';
-  [0,.33,.66,1].forEach(t=>{
-    const y=PAD+t*(H-PAD*2),v=maxV-t*(maxV-minV);
-    html+=`<line x1="${PAD}" y1="${y.toFixed(1)}" x2="${W-PAD}" y2="${y.toFixed(1)}" stroke="rgba(255,255,255,0.04)" stroke-width="1"/>`;
-    html+=`<text x="${PAD-3}" y="${(y+3).toFixed(1)}" text-anchor="end" fill="rgba(255,255,255,0.18)" font-size="8" font-family="DM Mono">$${Math.round(v/100)*100}</text>`;
+  // Grid
+  [0,.5,1].forEach(t=>{
+    const y=PY+t*(H-PY*2),v=maxV-t*(maxV-minV);
+    html+=`<line x1="${PX}" y1="${y.toFixed(1)}" x2="${W-PX}" y2="${y.toFixed(1)}" stroke="rgba(255,255,255,0.04)" stroke-width="1"/>`;
+    html+=`<text x="${PX-4}" y="${(y+3).toFixed(1)}" text-anchor="end" fill="rgba(255,255,255,0.2)" font-size="8.5" font-family="DM Mono">$${Math.round(v/100)*100}</text>`;
   });
+  // Eje X
   fa.forEach((f,i)=>{
-    html+=`<text x="${xS(i).toFixed(1)}" y="${(H-4).toFixed(1)}" text-anchor="middle" fill="rgba(255,255,255,0.18)" font-size="8" font-family="DM Mono">${f.substring(5)}</text>`;
+    html+=`<text x="${xS(i).toFixed(1)}" y="${(H-2).toFixed(1)}" text-anchor="middle" fill="rgba(255,255,255,0.18)" font-size="8.5" font-family="DM Mono">${f.substring(5)}</text>`;
   });
+  // Líneas + puntos
   topZ.forEach((zona,zi)=>{
     const color=colors[zi];
     const pts=fa.map((f,i)=>series[zona]?.[f]?`${xS(i).toFixed(1)},${yS(series[zona][f]).toFixed(1)}`:null).filter(Boolean);
-    if(pts.length>=2) html+=`<polyline points="${pts.join(' ')}" stroke="${color}" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" opacity="0.85"/>`;
-    fa.forEach((f,i)=>{if(series[zona]?.[f]) html+=`<circle cx="${xS(i).toFixed(1)}" cy="${yS(series[zona][f]).toFixed(1)}" r="2.5" fill="${color}"/>`});
+    if(pts.length>=2) html+=`<polyline points="${pts.join(' ')}" stroke="${color}" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" opacity="0.9"/>`;
+    fa.forEach((f,i)=>{if(series[zona]?.[f]) html+=`<circle cx="${xS(i).toFixed(1)}" cy="${yS(series[zona][f]).toFixed(1)}" r="2.2" fill="${color}"/>`;});
   });
   svg.innerHTML=html;
 }
 
-function renderInsights(){
-  const d=S.deals;
-  const gangas=d.filter(x=>x.estatus_inversion?.includes('SUBVALUADO'));
-  const sobre=d.filter(x=>x.estatus_inversion?.includes('SOBREVALORADA'));
-  const avgGap=d.length?(d.reduce((a,b)=>a+Number(b.diferencia_vs_mercado||0),0)/d.length*100).toFixed(1):0;
+function renderInsights(deals,metrics){
+  const el=document.getElementById('insights');if(!el)return;
+  const sub=deals.filter(x=>x.estatus_inversion?.includes('SUBVALUADO'));
+  const sob=deals.filter(x=>x.estatus_inversion?.includes('SOBREVALORADA'));
+  const avgGap=deals.length?(deals.reduce((a,b)=>a+Number(b.diferencia_vs_mercado||0),0)/deals.length*100).toFixed(1):0;
   const latest={};
-  S.snaps.forEach(s=>{const z=s.market_snapshot?.dim_zone?.zona||'',f=s.market_snapshot?.fecha_snapshot||'';if(!latest[z]||f>latest[z].f)latest[z]={med:Number(s.precio_m2_mediana),f};});
+  metrics.forEach(m=>{
+    const z=m.market_snapshot?.dim_zone?.zona;
+    const f=m.market_snapshot?.fecha_snapshot;
+    if(z&&f&&(!latest[z]||f>latest[z].f))latest[z]={med:Number(m.precio_m2_mediana),f};
+  });
   const topZ=Object.entries(latest).filter(([,v])=>v.med>0).sort((a,b)=>b[1].med-a[1].med)[0];
-  const el=document.getElementById('insights');
-  if(!el)return;
   const items=[
-    {color:'var(--amb)',label:'Gangas activas',text:`${gangas.length} propiedades con spread negativo superior al 25%. Potencial de retorno alto para inversores en zona.`},
-    {color:'var(--grn)',label:'Spread del mercado',text:`Desviación promedio del mercado respecto al benchmark: ${avgGap}%. Mercado con presión mixta.`},
-    {color:'var(--blu)',label:'Zona líder',text:topZ?`${topZ[0]} lidera en precio/m² con ${fmtU(topZ[1].med)} de mediana. Demanda premium sostenida.`:'Calculando zonas de liderazgo...'},
-    {color:'var(--red)',label:'Riesgo de capital',text:`${sobre.length} propiedades identificadas como sobrevaloradas respecto al benchmark zonal.`}
+    {c:'var(--amb)',tag:'Gangas activas',text:`${sub.length} propiedades con spread superior al 25% bajo el benchmark zonal.`},
+    {c:'var(--grn)',tag:'Spread del mercado',text:`Desviación promedio: ${avgGap}% respecto al benchmark. Mercado con presión mixta.`},
+    {c:'var(--blu)',tag:'Zona líder',text:topZ?`${topZ[0]} lidera con ${fU(topZ[1].med)}/m². Demanda premium sostenida.`:'Calculando zonas...'},
+    {c:'var(--red)',tag:'Riesgo de capital',text:`${sob.length} propiedades identificadas como sobrevaloradas en el mercado actual.`}
   ];
-  el.innerHTML=items.map(i=>`
-    <div class="insight-item" style="--accent:${i.color}">
-      <div class="insight-label">${i.label}</div>
-      ${i.text}
-    </div>`).join('');
+  el.innerHTML=items.map(i=>`<div class="ins-item" style="--c:${i.c}"><div class="ins-tag">${i.tag}</div><div class="ins-text">${i.text}</div></div>`).join('');
 }
 
-function renderBench(){
+function renderBench(metrics){
+  // Tomar snapshot más reciente por zona+tipo
   const latest={};
-  S.snaps.forEach(s=>{
-    const zona=s.market_snapshot?.dim_zone?.zona||'';
-    const tipo=s.market_snapshot?.dim_property_type?.tipo_inmueble||'';
-    const fecha=s.market_snapshot?.fecha_snapshot||'';
+  metrics.forEach(m=>{
+    const zona=m.market_snapshot?.dim_zone?.zona;
+    const tipo=m.market_snapshot?.dim_property_type?.tipo_inmueble;
+    const fecha=m.market_snapshot?.fecha_snapshot;
+    if(!zona||!tipo||!fecha)return;
     const key=`${zona}__${tipo}`;
-    if(!latest[key]||fecha>latest[key].fecha)latest[key]={...s,zona,tipo,fecha};
+    if(!latest[key]||fecha>latest[key].fecha)latest[key]={...m,zona,tipo,fecha};
   });
   const rows=Object.values(latest).filter(r=>r.cantidad_muestras>=3).sort((a,b)=>Number(b.precio_m2_mediana)-Number(a.precio_m2_mediana));
   const aptos=rows.filter(r=>r.tipo==='APARTAMENTO');
   const casas=rows.filter(r=>r.tipo==='CASA');
-  const aptAvg=aptos.length?Math.round(aptos.reduce((a,b)=>a+Number(b.precio_m2_mediana),0)/aptos.length):0;
-  const casaAvg=casas.length?Math.round(casas.reduce((a,b)=>a+Number(b.precio_m2_mediana),0)/casas.length):0;
-  setEl('aptAvg',fmtU(aptAvg));setEl('casaAvg',fmtU(casaAvg));
+  setEl('aptAvg',aptos.length?fU(Math.round(aptos.reduce((a,b)=>a+Number(b.precio_m2_mediana),0)/aptos.length)):'—');
+  setEl('casaAvg',casas.length?fU(Math.round(casas.reduce((a,b)=>a+Number(b.precio_m2_mediana),0)/casas.length)):'—');
   const maxV=Math.max(...rows.map(r=>Number(r.precio_m2_mediana)));
-  const tb=document.getElementById('benchTbl');
-  if(!tb)return;
-  tb.innerHTML=rows.map(r=>{
-    const sc=confScore(r),cf=confLabel(sc);
+  const tb=document.getElementById('benchTbl');if(!tb)return;
+  tb.innerHTML=rows.length?rows.map(r=>{
+    const sc=confScore(r.cantidad_muestras,r.desviacion_std,r.precio_m2_mediana,r.p25,r.p75);
+    const cf=confLabel(sc);
     const pct=((Number(r.precio_m2_mediana)/maxV)*100).toFixed(0);
     const cv=((Number(r.desviacion_std)/Number(r.precio_m2_mediana))*100).toFixed(1);
-    const cvColor=Number(cv)>30?'var(--red)':Number(cv)>15?'var(--amb)':'var(--grn)';
-    const tipoColor=r.tipo==='APARTAMENTO'?'var(--blu)':'var(--amb)';
+    const cvC=Number(cv)>30?'var(--red)':Number(cv)>15?'var(--amb)':'var(--grn)';
+    const tC=r.tipo==='APARTAMENTO'?'var(--blu)':'var(--amb)';
     return `<tr>
-      <td>
-        <div class="td-main">${r.zona}</div>
-        <div><span class="tag-tipo" style="color:${tipoColor};border-color:${tipoColor}40">${r.tipo}</span></div>
-      </td>
-      <td class="bar-col"><div class="mini-bar"><div class="mini-bar-fill" style="width:${pct}%"></div></div></td>
-      <td class="mono-lg">${fmtU(r.precio_m2_mediana)}</td>
-      <td class="mono" style="font-size:10px;color:var(--t3)">$${fmt(r.p25)} – $${fmt(r.p75)}</td>
-      <td class="mono" style="color:${cvColor}">${cv}%</td>
+      <td><div class="td-name">${r.zona}</div><div><span class="tag-t" style="color:${tC};border-color:${tC}40">${r.tipo}</span></div></td>
+      <td><div class="mini-bar"><div class="mini-bar-f" style="width:${pct}%"></div></div></td>
+      <td class="mono-v">${fU(r.precio_m2_mediana)}</td>
+      <td class="mono" style="font-size:10px;color:var(--ink3)">$${fmt(r.p25)} – $${fmt(r.p75)}</td>
+      <td class="mono" style="color:${cvC}">${cv}%</td>
       <td class="mono" style="text-align:center">${r.cantidad_muestras}</td>
       <td><span class="cbadge" style="color:${cf.c};border-color:${cf.c}">${cf.l} ${sc}</span></td>
     </tr>`;
-  }).join('');
+  }).join(''):'<tr class="empty-row"><td colspan="7">Sin datos con ≥3 muestras</td></tr>';
 }
 
-function renderFeed(){
-  const tb=document.getElementById('feedTbl');
-  if(!tb)return;
-  const top=S.deals.filter(d=>d.precio_m2&&d.diferencia_vs_mercado).slice(0,15);
-  if(!top.length){tb.innerHTML='<tr><td colspan="5" class="empty">Sin datos disponibles</td></tr>';return;}
+function renderFeed(deals){
+  const tb=document.getElementById('feedTbl');if(!tb)return;
+  const top=deals.filter(d=>d.precio_m2&&d.diferencia_vs_mercado).slice(0,15);
+  if(!top.length){tb.innerHTML='<tr class="empty-row"><td colspan="5">Sin datos disponibles</td></tr>';return;}
   tb.innerHTML=top.map(d=>{
     const diff=Number(d.diferencia_vs_mercado||0)*100;
     const dStr=(diff>0?'+':'')+diff.toFixed(1)+'%';
-    const dc=diff<=-25?'var(--grn)':diff<=-10?'#4d9fff':diff>=20?'var(--red)':'var(--slt)';
+    const dc=diff<=-25?'var(--grn)':diff<=-10?'var(--blu)':diff>=20?'var(--red)':'var(--slt)';
     const st=(d.estatus_inversion||'—').replace('VALOR DE MERCADO','MERCADO').replace('VALOR SUBVALUADO','SUBVALUADO');
     const conf=(d.indice_validacion||'—').replace('CONFIRMACIÓN: ','').replace('VALIDACIÓN EN PROCESO','EN PROCESO');
-    const nota=(d.nota_analista||'Sin nota').substring(0,38);
+    const nota=(d.nota_analista||'Sin nota').substring(0,40);
     return `<tr>
-      <td style="max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:11px;color:var(--t2)">${nota}</td>
-      <td style="font-size:10px;color:${dc};font-family:'DM Mono',monospace;font-weight:600">${st}</td>
-      <td class="mono-lg">${fmtU(d.precio_m2)}</td>
-      <td><span class="tag-diff" style="background:${dc}18;color:${dc};border:1px solid ${dc}35">${dStr}</span></td>
-      <td style="font-size:9px;color:var(--t3);font-family:'DM Mono',monospace">${conf}</td>
+      <td style="font-size:11px;max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${nota}</td>
+      <td class="mono" style="font-size:9px;color:${dc}">${st}</td>
+      <td class="mono-v">${fU(d.precio_m2)}</td>
+      <td><span class="diff-tag" style="background:${dc}18;color:${dc};border:1px solid ${dc}35">${dStr}</span></td>
+      <td class="mono" style="font-size:9px;color:var(--ink3)">${conf}</td>
     </tr>`;
   }).join('');
 }
 
-function renderHealth(zonasConB,cob){
-  const ultimo=S.snaps.map(s=>s.market_snapshot?.fecha_snapshot).filter(Boolean).sort().reverse()[0]||'—';
-  const manual=S.listings-S.scraperCount;
-  setEl('h1',S.sinArea+' listings');
+function renderHealth(D,zonasConB,cob){
+  const ultimo=D.metrics.map(m=>m.market_snapshot?.fecha_snapshot).filter(Boolean).sort().reverse()[0]||'—';
+  setEl('h1',D.sinArea+' listings');
   setEl('h2','0 detectados');
-  setEl('h3',(S.zones-zonasConB)+' zonas');
+  setEl('h3',(D.zones-zonasConB)+' zonas');
   setEl('h4',cob);
   setEl('h5',ultimo);
-  setEl('h6',S.scraperCount+' scraper · '+manual+' manual');
+  setEl('h6',D.scraper+' scraper · '+(D.listings-D.scraper)+' manual');
 }
 
-function renderSnaps(){
-  const tb=document.getElementById('snapTbl');
-  if(!tb)return;
-  const rows=S.snaps.map(s=>({
-    zona:s.market_snapshot?.dim_zone?.zona||'—',
-    tipo:s.market_snapshot?.dim_property_type?.tipo_inmueble||'—',
-    fecha:s.market_snapshot?.fecha_snapshot||'—',
-    med:Number(s.precio_m2_mediana),
-    muestras:s.cantidad_muestras,
-    p25:Number(s.p25),p75:Number(s.p75),std:Number(s.desviacion_std),
-    score:confScore(s)
+function renderSnaps(metrics,total){
+  const tb=document.getElementById('snapTbl');if(!tb)return;
+  const rows=metrics.map(m=>({
+    zona:m.market_snapshot?.dim_zone?.zona||'—',
+    tipo:m.market_snapshot?.dim_property_type?.tipo_inmueble||'—',
+    fecha:m.market_snapshot?.fecha_snapshot||'—',
+    med:Number(m.precio_m2_mediana),
+    muestras:m.cantidad_muestras,
+    p25:Number(m.p25),p75:Number(m.p75),std:Number(m.desviacion_std),
+    score:confScore(m.cantidad_muestras,m.desviacion_std,m.precio_m2_mediana,m.p25,m.p75)
   })).sort((a,b)=>b.fecha.localeCompare(a.fecha));
-  tb.innerHTML=rows.map(r=>{
+  tb.innerHTML=rows.length?rows.map(r=>{
     const cf=confLabel(r.score);
     const cv=r.med>0?((r.std/r.med)*100).toFixed(1):'—';
-    const cvColor=Number(cv)>30?'var(--red)':Number(cv)>15?'var(--amb)':'var(--grn)';
-    const tipoColor=r.tipo==='APARTAMENTO'?'var(--blu)':'var(--amb)';
+    const cvC=Number(cv)>30?'var(--red)':Number(cv)>15?'var(--amb)':'var(--grn)';
+    const tC=r.tipo==='APARTAMENTO'?'var(--blu)':'var(--amb)';
     return `<tr>
-      <td class="mono" style="color:var(--t3);font-size:10px">${r.fecha}</td>
-      <td><div class="td-main" style="font-size:12px">${r.zona}</div></td>
-      <td><span class="tag-tipo" style="color:${tipoColor};border-color:${tipoColor}40">${r.tipo}</span></td>
-      <td class="mono-lg">${fmtU(r.med)}</td>
-      <td class="mono" style="font-size:10px;color:var(--t3)">$${fmt(r.p25)} – $${fmt(r.p75)}</td>
-      <td class="mono" style="color:${cvColor}">${cv}%</td>
+      <td class="mono" style="font-size:10px;color:var(--ink3)">${r.fecha}</td>
+      <td class="td-name" style="font-size:12px">${r.zona}</td>
+      <td><span class="tag-t" style="color:${tC};border-color:${tC}40">${r.tipo}</span></td>
+      <td class="mono-v">${fU(r.med)}</td>
+      <td class="mono" style="font-size:10px;color:var(--ink3)">$${fmt(r.p25)} – $${fmt(r.p75)}</td>
+      <td class="mono" style="color:${cvC}">${cv}%</td>
       <td class="mono" style="text-align:center">${r.muestras}</td>
       <td><span class="cbadge" style="color:${cf.c};border-color:${cf.c}">${cf.l} ${r.score}</span></td>
     </tr>`;
-  }).join('');
+  }).join(''):'<tr class="empty-row"><td colspan="8">Sin snapshots disponibles</td></tr>';
 }
 
 init();
